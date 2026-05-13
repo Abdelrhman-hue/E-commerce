@@ -24,3 +24,131 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  background: #000; /* changed to black */
+  color: #fff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  backdrop-filter: saturate(140%) blur(6px);
+}
+
+.left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.logoWrap {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.navLinks {
+  display: flex;
+  gap: 0.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  align-items: center;
+}
+
+.navLinks li {
+  padding: 0.4rem 0.75rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  color: #fff; /* ensure links are visible on black */
+  transition:
+    background 0.15s,
+    transform 0.08s;
+  white-space: nowrap;
+}
+
+.navLinks li:hover {
+  background: rgba(255, 255, 255, 0.06);
+  transform: translateY(-1px);
+}
+
+.center {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  min-width: 0;
+}
+
+.search {
+  width: 100%;
+  max-width: 360px;
+  padding: 0.5rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  outline: none;
+  font-size: 0.95rem;
+  transition:
+    box-shadow 0.15s,
+    border-color 0.15s;
+  background: rgba(255, 255, 255, 0.03);
+  color: #fff;
+  caret-color: #fff;
+}
+
+.search::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.search:focus {
+  box-shadow: 0 6px 18px rgba(25, 118, 210, 0.12);
+  border-color: rgba(25, 118, 210, 0.8);
+}
+
+.right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.icon {
+  color: #fff; /* icons visible on black */
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  border-radius: 50%;
+  transition:
+    background 0.12s,
+    transform 0.08s;
+}
+
+.icon:hover {
+  background: rgba(255, 255, 255, 0.04);
+  transform: translateY(-1px);
+}
+
+.icon :global(svg) {
+  font-size: 100px;
+}
+
+/* Responsive: hide links/search on small screens */
+@media (max-width: 768px) {
+  .navLinks {
+    display: none;
+  }
+  .search {
+    display: none;
+  }
+  .center {
+    justify-content: flex-end;
+  }
+}
