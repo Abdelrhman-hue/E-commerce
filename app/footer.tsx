@@ -6,7 +6,7 @@ import logo from "../public/imges/2.png";
 export default function Footer() {
   return (
     <footer className="w-full ">
-      <div className="container mx-auto flex flex-col md:flex-row items-center justify-between gap-4 px-4">
+      <div className=" mx-auto flex flex-col md:flex-row items-center justify-between gap-4 px-4">
         <div className="flex items-center gap-3">
           <Image src={logo} alt="Shop Bog logo" width={80} height={60} />
           {/* <span className="text-lg font-semibold text-gray-900 dark:text-gray-100">Shop Bog</span> */}
@@ -24,7 +24,7 @@ export default function Footer() {
             </li>
             <li>
               <Link
-                className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
+                className="text-gray-400 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
                 href="/terms"
               >
                 Terms
@@ -32,7 +32,7 @@ export default function Footer() {
             </li>
             <li>
               <Link
-                className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
+                className="text-gray-400 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
                 href="/contact"
               >
                 Contact
@@ -40,7 +40,7 @@ export default function Footer() {
             </li>
             <li>
               <Link
-                className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
+                className="text-gray-400 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
                 href="/support"
               >
                 Support

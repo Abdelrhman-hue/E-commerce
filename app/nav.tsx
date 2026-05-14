@@ -7,7 +7,7 @@ import Link from "next/link";
 
 export default function Nav() {
   return (
-    <nav className="navbar container ml-auto mr-auto">
+    <nav className="navbar  ">
       <div className="left">
         <div className="logoWrap">
           <Image src={logo} alt="Logo" width={70} height={70} />
@@ -33,8 +33,8 @@ export default function Nav() {
       </div>
 
       <div className="right">
-        <LocalGroceryStoreRoundedIcon className="icon" />
-        <AccountCircleIcon className="icon" />
+        <LocalGroceryStoreRoundedIcon className="icon"><Link href="/cart">Cart</Link></LocalGroceryStoreRoundedIcon>
+        <AccountCircleIcon className="icon"><Link href="/account">Account</Link></AccountCircleIcon>
       </div>
 
       <style jsx>{``}</style>

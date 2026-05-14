@@ -32,8 +32,8 @@ body {
 .navbar {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
+  justify-content: space-evenly;
+  gap: 0.2rem;
   padding: 0.75rem 1rem;
   background: #000; /* changed to black */
   color: #fff;
@@ -62,7 +62,7 @@ body {
   display: flex;
   gap: 0.5rem;
   list-style: none;
-  margin: 0;
+  margin-left: 60px;
   padding: 0;
   align-items: center;
 }
@@ -80,7 +80,7 @@ body {
 }
 
 .navLinks li:hover {
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(215, 215, 215, 0.451);
   transform: translateY(-1px);
 }
 
@@ -92,9 +92,9 @@ body {
 }
 
 .search {
-  width: 100%;
-  max-width: 360px;
-  padding: 0.5rem 0.9rem;
+  width: 50%;
+  max-width: 260px;
+  padding: 10px;
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.08);
   outline: none;
