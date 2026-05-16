@@ -35,7 +35,7 @@ body {
   justify-content: space-evenly;
   gap: 0.2rem;
   padding: 0.75rem 1rem;
-  background: #000; /* changed to black */
+  background: #2a2a2a; /* changed to black */
   color: #fff;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
   border-bottom: 1px solid rgba(255, 255, 255, 0.04);

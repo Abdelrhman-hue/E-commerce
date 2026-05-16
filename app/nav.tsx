@@ -20,10 +20,10 @@ export default function Nav() {
             <Link href="/shop">Shop</Link>
           </li>
           <li>
-            <Link href="/about">About</Link>
+            <Link href="/about">Offers</Link>
           </li>
           <li>
-            <Link href="/contact">Contact</Link>
+            <Link href="/contact">About</Link>
           </li>
         </ul>
       </div>
