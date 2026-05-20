@@ -5,7 +5,7 @@ import LiftingHome from "@/Components/home";
 
 export default async function Home() {
   // Simulate loading
-  await new Promise(res => setTimeout(res, 3000));
+  // await new Promise(res => setTimeout(res, 3000));
 
   const category = [ "All", "Electronics", "Fashion", "Home&Living", "Beauty", "Sports"];
   return (
@@ -119,7 +119,7 @@ export default async function Home() {
           <div className="flex flex-wrap w-full gap-4  ml-8">
             {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16].map((i) => (
               <div key={i} className="h-40 w-36 bg-gray-400 rounded hover:scale-105 transition-transform">
-                <Link href={`/product/${i}`} className="block h-full w-full">
+                <Link href={`/product/${i}`} className="block h-full w-full text-center leading-40 text-white font-semibold">
                   Product {i}
                 </Link>
               </div>
