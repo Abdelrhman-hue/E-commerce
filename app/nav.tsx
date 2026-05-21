@@ -2,7 +2,7 @@
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import LocalGroceryStoreRoundedIcon from "@mui/icons-material/LocalGroceryStoreRounded";
 import Image from "next/image";
-import logo from "../public/imges/2.png";
+import logo from "../public/imges/2-Photoroom.png";
 import Link from "next/link";
 
 export default function Nav() {
@@ -10,7 +10,9 @@ export default function Nav() {
     <nav className="navbar  ">
       <div className="left">
         <div className="logoWrap">
-          <Image src={logo} alt="Logo" width={70} height={70} />
+          <Link href="/">
+            <Image src={logo} alt="Logo" width={100} height={100} />
+          </Link>
         </div>
         <ul className="navLinks">
           <li>
@@ -33,8 +35,8 @@ export default function Nav() {
       </div>
 
       <div className="right">
-        <LocalGroceryStoreRoundedIcon className="icon"><Link href="/cart">Cart</Link></LocalGroceryStoreRoundedIcon>
-        <AccountCircleIcon className="icon"><Link href="/account">Account</Link></AccountCircleIcon>
+        <Link href="/cart"><LocalGroceryStoreRoundedIcon className="icon" style={{ fontSize: '32px' }} /></Link>
+        <Link href="/Auth"><AccountCircleIcon className="icon" style={{ fontSize: '32px' }} /></Link>
       </div>
 
       <style jsx>{``}</style>
