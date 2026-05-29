@@ -19,7 +19,7 @@ export default async function Shop() {
             className="h-60 w-80 bg-gray-400 rounded hover:scale-105 transition-transform"
           >
             <Link
-              href={`/product/${i}`}
+              href={`/shop/${i}`}
               className="block h-full w-full text-center leading-60 text-white font-semibold"
             >
               Product {i}

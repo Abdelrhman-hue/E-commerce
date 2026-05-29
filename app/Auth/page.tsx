@@ -1,9 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import logoG from "../../public/logo/icons8-google-48.png"
-import logoA from "../../public/logo/icons8-apple-logo-50.png"
+import logoG from "../../public/logo/icons8-google-48.png";
+import logoA from "../../public/logo/icons8-apple-logo-50.png";
 import logo from "../../public/imges/2-Photoroom.png";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 import Link from "next/link";
 import { useState } from "react";
@@ -12,6 +13,15 @@ export default function AuthPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [check, setCheck] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+
+  function togglePasswordVisibility() {
+    if (showPassword == true) {
+      return setShowPassword(false);
+    } else {
+      return setShowPassword(true);
+    }
+  }
 
   function handleEmailChange(e: React.ChangeEvent<HTMLInputElement>) {
     setEmail(e.target.value);
@@ -22,7 +32,7 @@ export default function AuthPage() {
   }
 
   function handleCheckChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setCheck(e.target.checked );
+    setCheck(e.target.checked);
   }
 
   return (
@@ -30,7 +40,11 @@ export default function AuthPage() {
       <div className="card">
         <div
           className="brand"
-          style={{ display: "flex", justifyContent: "center", alignItems: "center" }}
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
         >
           <Image src={logo} alt="Logo" width={120} height={70} />
         </div>
@@ -74,34 +88,23 @@ export default function AuthPage() {
           </div>
           <div className="input">
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               placeholder="••••••••"
               value={password}
               onChange={handlePasswordChange}
             />
-            <button className="eye" aria-hidden>
-              <svg viewBox="0 0 24 24" width="16" height="16" fill="none">
-                <path
-                  d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"
-                  stroke="currentColor"
-                  strokeWidth="0.9"
-                  strokeOpacity="0.4"
-                />
-                <circle
-                  cx="12"
-                  cy="12"
-                  r="3"
-                  stroke="currentColor"
-                  strokeWidth="0.9"
-                  strokeOpacity="0.4"
-                />
-              </svg>
+            <button
+              className="eye"
+              aria-label="Toggle password visibility"
+              onClick={togglePasswordVisibility}
+            >
+              {showPassword ? <FaEyeSlash /> : <FaEye />}
             </button>
           </div>
         </label>
 
         <label className="row checkbox-row">
-          <input type="checkbox" checked={check} onChange={handleCheckChange}  />
+          <input type="checkbox" checked={check} onChange={handleCheckChange} />
           <span className="check-text">Remember me for 30 days</span>
         </label>
 
@@ -113,11 +116,15 @@ export default function AuthPage() {
 
         <div className="oauth">
           <button className="oauth-btn google">
-            <span className="g"><Image src={logoG} alt="Google Logo" /></span>
+            <span className="g">
+              <Image src={logoG} alt="Google Logo" />
+            </span>
             Continue with Google
           </button>
           <button className="oauth-btn apple">
-            <span className="a"><Image src={logoA} alt="Apple Logo" /></span>
+            <span className="a">
+              <Image src={logoA} alt="Apple Logo" />
+            </span>
             Continue with Apple
           </button>
         </div>

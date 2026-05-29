@@ -5,6 +5,7 @@ import Link from "next/link";
 import logoG from "../../../public/logo/icons8-google-48.png";
 import logoA from "../../../public/logo/icons8-apple-logo-50.png";
 import logo from "../../../public/imges/2-Photoroom.png";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 export default function RegisterPage() {
   const [fullName, setFullName] = useState("");
@@ -12,6 +13,24 @@ export default function RegisterPage() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [agree, setAgree] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [show2Password, setShow2Password] = useState(false);
+
+  function togglePasswordVisibility() {
+    if (showPassword == true) {
+      return setShowPassword(false);
+    } else {
+      return setShowPassword(true);
+    }
+  }
+
+  function togglePassword2Visibility() {
+    if (showPassword == true) {
+      return setShow2Password(false);
+    } else {
+      return setShow2Password(true);
+    }
+  }
 
   function handleFullNameChange(e: React.ChangeEvent<HTMLInputElement>) {
     setFullName(e.target.value);
@@ -76,27 +95,17 @@ export default function RegisterPage() {
           <div className="label-text">Password</div>
           <div className="input">
             <input
+              type={showPassword ? "text" : "password"}
               value={password}
               onChange={handlePasswordChange}
               placeholder="••••••••"
             />
-            <button className="eye" aria-hidden>
-              <svg viewBox="0 0 24 24" width="16" height="16" fill="none">
-                <path
-                  d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"
-                  stroke="currentColor"
-                  strokeWidth="0.9"
-                  strokeOpacity="0.4"
-                />
-                <circle
-                  cx="12"
-                  cy="12"
-                  r="3"
-                  stroke="currentColor"
-                  strokeWidth="0.9"
-                  strokeOpacity="0.4"
-                />
-              </svg>
+            <button
+              className="eye"
+              aria-label="Toggle password visibility"
+              onClick={togglePasswordVisibility}
+            >
+              {showPassword ? <FaEyeSlash /> : <FaEye />}
             </button>
           </div>
         </label>
@@ -105,10 +114,18 @@ export default function RegisterPage() {
           <div className="label-text">Confirm password</div>
           <div className="input">
             <input
+              type={show2Password ? "text" : "password"}
               value={confirmPassword}
               onChange={handleConfirmPasswordChange}
               placeholder="••••••••"
             />
+            <button
+              className="eye"
+              aria-label="Toggle password visibility"
+              onClick={togglePassword2Visibility}
+            >
+              {show2Password ? <FaEyeSlash /> : <FaEye />}
+            </button>
           </div>
         </label>
 
