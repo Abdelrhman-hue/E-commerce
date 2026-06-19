@@ -19,7 +19,7 @@ export default function Nav() {
             <Link href="/">Home</Link>
           </li>
           <li>
-            <Link href="/shop">Shop</Link>
+            <Link href="/shop?limit=10&page=1">Shop</Link>
           </li>
           <li>
             <Link href="/about">Offers</Link>

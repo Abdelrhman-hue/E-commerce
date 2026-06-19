@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Link from "next/link";
 
 export default function ShopPage({ children }: { children: React.ReactNode }) {
   const categories = [
@@ -28,6 +29,7 @@ export default function ShopPage({ children }: { children: React.ReactNode }) {
   // pagination state
   const [currentPage, setCurrentPage] = useState<number>(1);
   const totalPages = 12;
+  const limit = 10;
 
   function toggleArrayItem(
     arr: string[],
@@ -40,9 +42,10 @@ export default function ShopPage({ children }: { children: React.ReactNode }) {
 
   function getDisplayedPages(curr: number, total: number) {
     if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
-    if (curr <= 3) return [1, 2, 3, 4, '...', total];
-    if (curr >= total - 2) return [1, '...', total - 3, total - 2, total - 1, total];
-    return [1, '...', curr - 1, curr, curr + 1, '...', total];
+    if (curr <= 3) return [1, 2, 3, 4, "...", total];
+    if (curr >= total - 2)
+      return [1, "...", total - 3, total - 2, total - 1, total];
+    return [1, "...", curr - 1, curr, curr + 1, "...", total];
   }
 
   const pagesToShow = getDisplayedPages(currentPage, totalPages);
@@ -188,13 +191,6 @@ export default function ShopPage({ children }: { children: React.ReactNode }) {
         {/* pagination */}
         <div style={styles.paginationWrap}>
           <div style={styles.pagination}>
-            <button
-              aria-label="Previous"
-              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-              style={styles.pageButton}
-            >
-              ‹
-            </button>
 
             {pagesToShow.map((p, idx) => {
               if (p === "...") {
@@ -207,23 +203,24 @@ export default function ShopPage({ children }: { children: React.ReactNode }) {
               const num = p as number;
               const active = num === currentPage;
               return (
-                <button
+                <Link
                   key={num}
-                  onClick={() => setCurrentPage(num)}
-                  style={active ? { ...styles.pageButton, ...styles.activePage } : styles.pageButton}
+                  href={`/shop?limit=${limit || 10}&page=${num}`}
+                  onClick={() => {
+                    setCurrentPage(num);
+                  }}
+                  style={
+                    active
+                      ? { ...styles.pageButton, ...styles.activePage }
+                      : styles.pageButton
+                  }
                 >
                   {num}
-                </button>
+                </Link>
+                
               );
-            })}
 
-            <button
-              aria-label="Next"
-              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-              style={styles.pageButton}
-            >
-              ›
-            </button>
+            })}
           </div>
         </div>
       </main>

@@ -2,12 +2,23 @@ import Image from "next/image";
 import baner from "../public/imges/modern-man-casual-outfit-showing-shopping-bag-okay-sign-winking-camera-recommending-shop_1258-300002.avif";
 import Link from "next/link";
 import LiftingHome from "@/Components/home";
+import api from "@/api/api";
 
 export default async function Home() {
   // Simulate loading
-  // await new Promise(res => setTimeout(res, 3000));
+  await new Promise((res) => setTimeout(res, 3000));
 
-  const category = [ "All", "Electronics", "Fashion", "Home&Living", "Beauty", "Sports"];
+
+const { data } = await api.get("/products");
+
+  const category = [
+    "All",
+    "Electronics",
+    "Fashion",
+    "Home&Living",
+    "Beauty",
+    "Sports",
+  ];
   return (
     <>
       <div className="bg-[#30302E]">
@@ -92,13 +103,16 @@ export default async function Home() {
           </div>
           {/* Hero Section */}
           {/* category */}
-          <div className="flex items-center justify-between w-full px-4 pb-4" style={{borderBottom: "2px solid white"}}>
+          <div
+            className="flex items-center justify-between w-full px-4 pb-4"
+            style={{ borderBottom: "2px solid white" }}
+          >
             <div className="flex flex-wrap gap-4">
               {category.map((cat) => (
                 <Link
                   key={cat}
                   href={`/shop?category=${cat}`}
-                  className="text-sm text-blue-400 hover:text-blue-200"
+                  className="text-sm text-blue-400 hover:text-blue-200 transition-all duration-300 ease-in-out hover:shadow-lg p-2 rounded-lg"
                 >
                   {cat}
                 </Link>
@@ -112,15 +126,26 @@ export default async function Home() {
           </h1>
           <Link
             href="/shop"
-            className="self-end  text-sm text-blue-400 hover:text-blue-200 mt-4"
+            className="self-end  text-sm text-blue-400 hover:text-blue-200 hover:shadow-lg p-2 rounded-lg transition-all duration-300 ease-in-out"
           >
             View All
           </Link>
-          <div className="flex flex-wrap w-full gap-4  ml-8">
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16].map((i) => (
-              <div key={i} className="h-40 w-36 bg-gray-400 rounded hover:scale-105 transition-transform">
-                <Link href={`/shop/${i}`} className="block h-full w-full text-center leading-40 text-white font-semibold">
-                  Product {i}
+          <div className="flex flex-wrap justify-center gap-4  ml-8">
+            {data.map((i: { id: number; thumbnail: string }) => (
+              <div
+                key={i.id}
+                className="h-40 w-50 bg-white rounded hover:scale-105 transition-transform"
+              >
+                <Link
+                  href={`/shop/${i.id}`}
+                  className="flex justify-center items-center h-full w-full text-center leading-40 text-white font-semibold"
+                >
+                  <Image
+                    src={i.thumbnail}
+                    alt="image"
+                    width={160}
+                    height={160}
+                  />
                 </Link>
               </div>
             ))}

@@ -1,46 +1,43 @@
 import { notFound } from "next/navigation";
+import Image from "next/image";
+import ProductDetails from "@/Components/productDetalis";
 
 export default async function ProductPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const paramss = await params;
-  console.log(paramss.id);
-  console.log("lol");
-  if (paramss.id == "10") {
+  const { id } = await params;
+
+  const res = await fetch(`http://localhost:5000/products/${id}`);
+  if (!res.ok) {
     return notFound();
   }
+  const product = await res.json();
   return (
     <div className="product-page">
-      <h1 className="title">Product {paramss.id}</h1>
+      <h1 className="title">Product {product.category}</h1>
       <div className="product-card">
         <aside className="left-col">
           <div className="main-image">
-            <svg viewBox="0 0 120 90" aria-hidden>
-              <rect width="120" height="90" rx="6" fill="#222" />
-              <g fill="#333" stroke="#2b2b2b">
-                <rect x="18" y="22" width="84" height="46" rx="4" />
-              </g>
-              <text
-                x="60"
-                y="50"
-                fill="#555"
-                fontSize="9"
-                textAnchor="middle"
-                alignmentBaseline="middle"
-              >
-                Product image
-              </text>
-            </svg>
+            <Image
+              src={product.images[0]}
+              alt={product.title}
+              width={300}
+              height={300}
+              priority
+            />
           </div>
 
           <div className="thumbs">
             {Array.from({ length: 4 }).map((_, i) => (
               <div key={i} className="thumb">
-                <svg viewBox="0 0 40 30" aria-hidden>
-                  <rect width="40" height="30" rx="4" fill="#222" />
-                </svg>
+                <Image
+                  src={product.thumbnail}
+                  alt={`${product.title}  ${i + 1}`}
+                  width={100}
+                  height={100}
+                />
               </div>
             ))}
           </div>
@@ -48,68 +45,51 @@ export default async function ProductPage({
 
         <section className="right-col">
           <div className="meta">
-            <div className="brand">APPLE</div>
-            <h1 className="title">MacBook Air 13 — M3 chip</h1>
+            <div className="brand">{product.brand}</div>
+            <h1 className="title">{product.title}</h1>
             <div className="rating">
-              ★ ★ ★ ★ ★ <span className="muted">4.9 (1,284 reviews)</span>
+              ★ ★ ★ ★ ★{" "}
+              <span className="muted">{product.rating} (1,284 reviews)</span>
             </div>
           </div>
 
           <div className="price-row">
-            <div className="price">$1,099</div>
-            <div className="old-price">$1,299</div>
-            <div className="badge">Save $200</div>
+            <div className="price">${product.price}</div>
           </div>
 
-          <div className="options">
-            <div className="option-group">
-              <div className="opt-label">Color:</div>
-              <div className="swatches">
-                <span className="swatch sw-midnight" />
-                <span className="swatch sw-silver" />
-                <span className="swatch sw-green" />
-                <span className="swatch sw-blue" />
+          {product.category === "electronics" && (
+            <div className="options">
+              <div className="option-group">
+                <div className="opt-label">Color:</div>
+                <div className="swatches">
+                  <span className="swatch sw-midnight" />
+                  <span className="swatch sw-silver" />
+                  <span className="swatch sw-green" />
+                  <span className="swatch sw-blue" />
+                </div>
+              </div>
+
+              <div className="option-group">
+                <div className="opt-label">Storage:</div>
+                <div className="chips">
+                  <button className="chip active">256GB</button>
+                  <button className="chip">512GB</button>
+                  <button className="chip">1TB</button>
+                </div>
+              </div>
+
+              <div className="option-group">
+                <div className="opt-label">RAM:</div>
+                <div className="chips">
+                  <button className="chip active">16GB</button>
+                  <button className="chip">24GB</button>
+                </div>
               </div>
             </div>
-
-            <div className="option-group">
-              <div className="opt-label">Storage:</div>
-              <div className="chips">
-                <button className="chip active">256GB</button>
-                <button className="chip">512GB</button>
-                <button className="chip">1TB</button>
-              </div>
-            </div>
-
-            <div className="option-group">
-              <div className="opt-label">RAM:</div>
-              <div className="chips">
-                <button className="chip active">16GB</button>
-                <button className="chip">24GB</button>
-              </div>
-            </div>
+          )}
+          <div className="product-details">
+            <ProductDetails />
           </div>
-
-          <div className="buy-row">
-            <div className="qty">
-              <button className="qty-btn">−</button>
-              <div className="qty-num">1</div>
-              <button className="qty-btn">+</button>
-            </div>
-
-            <div className="actions">
-              <button className="btn primary">Add to cart</button>
-              <button className="btn ghost">Buy now</button>
-            </div>
-          </div>
-
-          <div className="features">
-            <div className="feat">Free delivery</div>
-            <div className="feat">30-day return</div>
-            <div className="feat">2yr warranty</div>
-            <div className="feat">Secure pay</div>
-          </div>
-
           <div className="tabs">
             <nav>
               <button className="tab active">Description</button>
