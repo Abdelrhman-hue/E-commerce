@@ -82,7 +82,7 @@ export default function AuthPage() {
         <label className="field">
           <div className="label-text">
             Password
-            <Link className="forgot" href="#">
+            <Link className="forgot" href="/Auth/ForgotPassword">
               Forgot?
             </Link>
           </div>
