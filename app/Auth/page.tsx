@@ -1,19 +1,34 @@
 "use client";
-
 import Image from "next/image";
 import logoG from "../../public/logo/icons8-google-48.png";
 import logoA from "../../public/logo/icons8-apple-logo-50.png";
 import logo from "../../public/imges/2-Photoroom.png";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-
 import Link from "next/link";
 import { useState } from "react";
+import axios from "axios";
 
 export default function AuthPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [check, setCheck] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+
+  const postData = async () => {
+    try {
+      const response = await axios.post("/api/auth/login", {
+        email,
+        password,
+      });
+      console.log("User logged in:", response.data);
+    } catch (error) {
+      console.error("Error logging in user:", error);
+    }
+  };
+
+  function handleSubmit() {
+    postData();
+  }
 
   function togglePasswordVisibility() {
     if (showPassword == true) {
@@ -108,7 +123,7 @@ export default function AuthPage() {
           <span className="check-text">Remember me for 30 days</span>
         </label>
 
-        <button className="primary">Sign in</button>
+        <button className="primary" onClick={handleSubmit}>Sign in</button>
 
         <div className="divider">
           <span>or continue with</span>

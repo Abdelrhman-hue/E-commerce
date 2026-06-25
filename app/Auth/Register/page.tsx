@@ -6,15 +6,35 @@ import logoG from "../../../public/logo/icons8-google-48.png";
 import logoA from "../../../public/logo/icons8-apple-logo-50.png";
 import logo from "../../../public/imges/2-Photoroom.png";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import axios from "axios";
 
 export default function RegisterPage() {
-  const [fullName, setFullName] = useState("");
+  const [firstName, setfirstName] = useState("");
+  const [secondName, setsecondName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [agree, setAgree] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [show2Password, setShow2Password] = useState(false);
+
+  const postData = async () => {
+    try {
+      const response = await axios.post("/api/auth/register", {
+        firstName,
+        secondName,
+        email,
+        password,
+      });
+      console.log("User registered:", response.data);
+    } catch (error) {
+      console.error("Error registering user:", error);
+    }
+  };
+
+  function handleSubmit() {
+    postData();
+  }
 
   function togglePasswordVisibility() {
     if (showPassword == true) {
@@ -32,8 +52,12 @@ export default function RegisterPage() {
     }
   }
 
-  function handleFullNameChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setFullName(e.target.value);
+  function handleFirstNameChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setfirstName(e.target.value);
+  }
+
+  function handleSecondNameChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setsecondName(e.target.value);
   }
 
   function handleEmailChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -70,12 +94,20 @@ export default function RegisterPage() {
         <p className="subtitle">Start your free account</p>
 
         <label className="field">
-          <div className="label-text">Full name</div>
+          <div className="label-text">First name</div>
+          <div className="input mb-2">
+            <input
+              value={firstName}
+              onChange={handleFirstNameChange}
+              placeholder="Ahmed"
+            />
+          </div>
+          <div className="label-text">Second name</div>
           <div className="input">
             <input
-              value={fullName}
-              onChange={handleFullNameChange}
-              placeholder="Ahmed Ali"
+              value={secondName}
+              onChange={handleSecondNameChange}
+              placeholder="ali"
             />
           </div>
         </label>
@@ -134,7 +166,7 @@ export default function RegisterPage() {
           <span className="check-text">I agree to the Terms and Privacy</span>
         </label>
 
-        <button className="primary">Create account</button>
+        <button className="primary" onSubmit={handleSubmit}>Create account</button>
 
         <div className="divider">
           <span>or continue with</span>

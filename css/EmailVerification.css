@@ -1,0 +1,104 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.verify-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #000000;
+  padding: 20px;
+}
+
+.verify-card {
+  width: 380px;
+  background: #2f2d2b;
+  border: 1px solid #4b4947;
+  border-radius: 14px;
+  padding: 32px 24px;
+  text-align: center;
+  color: white;
+}
+
+.logo-container {
+  margin-bottom: 24px;
+  display: flex;
+  justify-content: center;
+}
+
+.logo {
+  width: 120px;
+  height: auto;
+  object-fit: contain;
+}
+
+.mail-icon {
+  width: 72px;
+  height: 72px;
+  margin: 0 auto 20px;
+  border-radius: 50%;
+  background: #e8eef6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0d66c2;
+  font-size: 32px;
+}
+
+.verify-card h2 {
+  font-size: 28px;
+  margin-bottom: 12px;
+}
+
+.description {
+  color: #bdbdbd;
+  line-height: 1.7;
+  margin-bottom: 24px;
+}
+
+.email {
+  color: white;
+  font-weight: 600;
+}
+
+.info-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #dcebff;
+  color: #0d66c2;
+  padding: 14px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  text-align: left;
+  font-size: 14px;
+}
+
+.verify-btn {
+  width: 100%;
+  padding: 14px;
+  border: 1px solid #6b6967;
+  border-radius: 10px;
+  background: transparent;
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.verify-btn:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.change-email {
+  margin-top: 18px;
+  background: none;
+  border: none;
+  color: #0d66c2;
+  cursor: pointer;
+  font-size: 14px;
+}

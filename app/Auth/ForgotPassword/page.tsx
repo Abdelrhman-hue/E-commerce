@@ -4,9 +4,29 @@ import Image from "next/image";
 import Link from "next/link";
 import logo from "../../../public/imges/2-Photoroom.png";
 import { useState } from "react";
+import axios from "axios";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
+  // Check if email is valid
+  const postData = async () => {
+    try {
+      const response = await axios.post("/api/auth/forgot-password", { email });
+      console.log("Verification code sent:", response.data);
+    } catch (error) {
+      console.error("Error sending verification code:", error);
+    }
+  };
+  const isValidEmail = (email: string) => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+  };
+
+  if (isValidEmail(email)) {
+    postData();
+  } else {
+    console.error("Invalid email address");
+  }
 
   return (
     <div className="auth-page">
@@ -50,17 +70,19 @@ export default function ForgotPasswordPage() {
 
         <div className={email ? "primary" : "opacity-50 cursor-not-allowed"}>
           {email ? (
-            <Link href="/Auth/ForgotPassword/verify-code">Send reset Code</Link>
+            <Link href={`/Auth/ForgotPassword/verify-code?email=${email}`}>Send reset Code</Link>
           ) : (
-            <span className="opacity-50 cursor-not-allowed">Send reset Code</span>
+            <span className="opacity-50 cursor-not-allowed">
+              Send reset Code
+            </span>
           )}
         </div>
 
-        <div className="back">
+        <button onClick={postData} className="back">
           <Link href="/Auth" className="back-link">
             ← Back to sign in
           </Link>
-        </div>
+        </button>
       </div>
     </div>
   );
