@@ -4,8 +4,40 @@ import LocalGroceryStoreRoundedIcon from "@mui/icons-material/LocalGroceryStoreR
 import Image from "next/image";
 import logo from "../public/imges/2-Photoroom.png";
 import Link from "next/link";
+import api from "@/api/api";
+import { useEffect, useState } from "react";
+
+interface User {
+  id: string;
+  email: string;
+  fristname: string;
+  lastname: string;
+  roles: string[];
+}
 
 export default function Nav() {
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await api.get("/users/me").then(
+          (res) => {
+            console.log(res.data);
+            setUser(res.data.data);
+          }
+        );
+
+        // setUser(response.data); // أو response.data حسب شكل الـ API
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    
+    fetchData();
+  }, []);
+  
+  console.log("user", user)
   return (
     <nav className="navbar  ">
       <div className="left">
@@ -35,8 +67,16 @@ export default function Nav() {
       </div>
 
       <div className="right">
-        <Link href="/cart"><LocalGroceryStoreRoundedIcon className="icon" style={{ fontSize: '32px' }} /></Link>
-        <Link href="/Auth"><AccountCircleIcon className="icon" style={{ fontSize: '32px' }} /></Link>
+        <Link href="/cart">
+          <LocalGroceryStoreRoundedIcon
+            className="icon"
+            style={{ fontSize: "32px" }}
+          />
+        </Link>
+        <Link href="/Auth">
+          <AccountCircleIcon className="icon" style={{ fontSize: "32px" }} />
+          <span className="username">{user?.fristname ?? "Guest"}</span>
+        </Link>
       </div>
 
       <style jsx>{``}</style>

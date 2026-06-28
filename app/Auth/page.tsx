@@ -7,27 +7,35 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import Link from "next/link";
 import { useState } from "react";
 import axios from "axios";
+import api from "@/api/api"
+import { useRouter } from "next/navigation";
 
 export default function AuthPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [check, setCheck] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const router = useRouter();
 
   const postData = async () => {
     try {
-      const response = await axios.post("/api/auth/login", {
+      const response = await api.post("/users/login", {
         email,
         password,
       });
       console.log("User logged in:", response.data);
+      return response.data;
     } catch (error) {
       console.error("Error logging in user:", error);
     }
+    
   };
 
   function handleSubmit() {
-    postData();
+    postData().then((data) => {
+      router.push("/");
+      localStorage.setItem("user", JSON.stringify(data));
+    });
   }
 
   function togglePasswordVisibility() {
@@ -40,6 +48,7 @@ export default function AuthPage() {
 
   function handleEmailChange(e: React.ChangeEvent<HTMLInputElement>) {
     setEmail(e.target.value);
+
   }
 
   function handlePasswordChange(e: React.ChangeEvent<HTMLInputElement>) {
