@@ -6,7 +6,8 @@ import logoG from "../../../public/logo/icons8-google-48.png";
 import logoA from "../../../public/logo/icons8-apple-logo-50.png";
 import logo from "../../../public/imges/2-Photoroom.png";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import axios from "axios";
+import { useRouter } from "next/navigation";
+import api from "@/api/api";
 
 export default function RegisterPage() {
   const [firstName, setfirstName] = useState("");
@@ -17,23 +18,26 @@ export default function RegisterPage() {
   const [agree, setAgree] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [show2Password, setShow2Password] = useState(false);
+  const router = useRouter();
 
   const postData = async () => {
-    try {
-      const response = await axios.post("/api/auth/register", {
-        firstName,
-        secondName,
-        email,
-        password,
-      });
-      console.log("User registered:", response.data);
-    } catch (error) {
-      console.error("Error registering user:", error);
-    }
+    const response = await api.post("/users/register", {
+      firstname: firstName,
+      lastname: secondName,
+      email,
+      password,
+    });
+
+    return response.data;
   };
 
-  function handleSubmit() {
-    postData();
+  async function handleSubmit() {
+    try {
+      await postData();
+      router.replace("/Auth/ForgotPassword/verify-code");
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   function togglePasswordVisibility() {
@@ -166,7 +170,9 @@ export default function RegisterPage() {
           <span className="check-text">I agree to the Terms and Privacy</span>
         </label>
 
-        <button className="primary" onSubmit={handleSubmit}>Create account</button>
+        <button className="primary" onClick={handleSubmit}>
+          Create account
+        </button>
 
         <div className="divider">
           <span>or continue with</span>

@@ -6,7 +6,6 @@ import logo from "../../public/imges/2-Photoroom.png";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import Link from "next/link";
 import { useState } from "react";
-import axios from "axios";
 import api from "@/api/api"
 import { useRouter } from "next/navigation";
 
