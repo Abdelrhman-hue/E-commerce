@@ -75,7 +75,7 @@ export default function Nav() {
         </Link>
         <Link href="/Auth">
           <AccountCircleIcon className="icon" style={{ fontSize: "32px" }} />
-          <span className="username">{user?.fristname ?? "Guest"}</span>
+          <span className="username mr-2">{user?.fristname ?? "Guest"}</span>
         </Link>
       </div>
 
