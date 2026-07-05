@@ -250,7 +250,10 @@ function OrderSummary({
 
       <div className="rounded-lg bg-[#232321] p-4">
         <div className="space-y-3 border-b border-zinc-700 pb-4 text-sm">
-          <SummaryLine label={`Subtotal (${itemCount} items)`} value={subtotal} />
+          <SummaryLine
+            label={`Subtotal (${itemCount} items)`}
+            value={subtotal}
+          />
           <div className="flex items-center justify-between gap-4">
             <span className="font-bold text-zinc-300">Shipping</span>
             <span className="font-bold text-emerald-500">Free</span>

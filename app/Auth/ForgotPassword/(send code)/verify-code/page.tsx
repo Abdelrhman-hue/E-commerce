@@ -42,9 +42,9 @@ export default async function EmailVerification({
           <span>Can{"'"}t find it? Check your spam folder.</span>
         </div>
 
-        <Link href="/Auth/ForgotPassword/verify-code/verify" className="verify-btn">Enter code →</Link>
+        <Link href="/Auth/ForgotPassword" className="change-email mr-1.5">← Change email</Link>
+        <Link href={`/Auth/ForgotPassword/verify-code/verify?email=${params.email}`} className="verify-btn">Enter code →</Link>
 
-        <Link href="/Auth/ForgotPassword" className="change-email">← Change email</Link>
       </div>
     </div>
   );

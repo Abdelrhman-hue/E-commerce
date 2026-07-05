@@ -66,7 +66,7 @@ export default function ForgotPasswordPage() {
           </div>
         </label>
 
-        <div className={email ? "primary" : "opacity-50 cursor-not-allowed"}>
+        <button onClick={postData} className={email ? "primary" : "opacity-50 cursor-not-allowed"}>
           {email ? (
             <Link href={`/Auth/ForgotPassword/verify-code?email=${email}`}>
               Send reset Code
@@ -76,9 +76,9 @@ export default function ForgotPasswordPage() {
               Send reset Code
             </span>
           )}
-        </div>
+        </button>
 
-        <button onClick={postData} className="back">
+        <button className="back">
           <Link href="/Auth" className="back-link">
             ← Back to sign in
           </Link>
