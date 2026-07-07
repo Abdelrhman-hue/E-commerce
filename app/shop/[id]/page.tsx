@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import ProductDetails from "@/Components/productDetalis";
 
+
 export default async function ProductPage({
   params,
 }: {
@@ -13,7 +14,12 @@ export default async function ProductPage({
   if (!res.ok) {
     return notFound();
   }
+
   const product = await res.json();
+
+  
+
+  
   return (
     <div className="product-page">
       <h1 className="title">Product {product.category}</h1>
@@ -88,7 +94,7 @@ export default async function ProductPage({
             </div>
           )}
           <div className="product-details">
-            <ProductDetails />
+            <ProductDetails product={product} />
           </div>
           <div className="tabs">
             <nav>
@@ -114,6 +120,9 @@ export default async function ProductPage({
         </section>
       </div>
 
+
+
+          
       <section className="related">
         <h3>You may also like</h3>
         <div className="related-list">

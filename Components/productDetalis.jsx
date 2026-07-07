@@ -1,20 +1,43 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
+import api from "@/api/api";
 
-export default function ProductDetails() {
-    const [quantity, setQuantity] = useState(1);
+export default function ProductDetails({ product }) {
+  const [quantity, setQuantity] = useState(1);
+
+  async function handleAddToCart() {
+    try {
+      await api.post("/orders", {
+        items: [
+          {
+            product: product._id,
+            quantity: quantity,
+          },
+        ],
+      });
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+    }
+  }
 
   return (
     <>
       <div className="buy-row">
         <div className="qty">
-          <button className="qty-btn" onClick={() => setQuantity(quantity > 1 ? quantity - 1 : 1)}>-</button>
+          <button
+            className="qty-btn"
+            onClick={() => setQuantity(quantity > 1 ? quantity - 1 : 1)}
+          >
+            -
+          </button>
           <div className="qty-num">{quantity}</div>
-          <button className="qty-btn" onClick={() => setQuantity(quantity + 1)}>+</button>
+          <button className="qty-btn" onClick={() => setQuantity(quantity + 1)}>
+            +
+          </button>
         </div>
 
-        <div className="actions">
+        <div className="actions" onClick={handleAddToCart}>
           <Link href="/cart" className="btn primary">
             Add to cart
           </Link>

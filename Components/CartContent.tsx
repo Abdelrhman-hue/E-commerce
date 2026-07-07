@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   FiArrowRight,
   FiHeadphones,
@@ -14,45 +14,41 @@ import {
   FiWatch,
 } from "react-icons/fi";
 
+import api from "@/api/api";
+
 type CartItem = {
-  id: number;
+  id: string;
+  orderId: string;
   name: string;
   details: string;
+  category: string;
+  status: string;
   price: number;
-  oldPrice: number;
   quantity: number;
   icon: "laptop" | "headphones" | "watch";
 };
 
-const initialItems: CartItem[] = [
-  {
-    id: 1,
-    name: "MacBook Air M3",
-    details: "Space Grey - 16GB RAM - 512GB SSD",
-    price: 1099,
-    oldPrice: 1299,
-    quantity: 1,
-    icon: "laptop",
-  },
-  {
-    id: 2,
-    name: "Sony WH-1000XM5",
-    details: "Black - Wireless",
-    price: 279,
-    oldPrice: 399,
-    quantity: 2,
-    icon: "headphones",
-  },
-  {
-    id: 3,
-    name: "Apple Watch Ultra 2",
-    details: "Titanium - 49mm",
-    price: 799,
-    oldPrice: 799,
-    quantity: 1,
-    icon: "watch",
-  },
-];
+type ApiProduct = {
+  _id: string;
+  title: string;
+  description: string;
+  category: string;
+  price: number;
+};
+
+type ApiOrderItem = {
+  _id: string;
+  product: ApiProduct;
+  quantity: number;
+  price: number;
+};
+
+type ApiOrder = {
+  _id: string;
+  items: ApiOrderItem[];
+  totalPrice: number;
+  status: string;
+};
 
 const checkoutSteps = ["Cart", "Address", "Payment", "Review"];
 
@@ -64,6 +60,34 @@ const currency = new Intl.NumberFormat("en-US", {
 
 function formatPrice(value: number) {
   return currency.format(value);
+}
+
+function getIconByCategory(category: string): CartItem["icon"] {
+  if (category.toLowerCase().includes("groceries")) {
+    return "watch";
+  }
+
+  if (category.toLowerCase().includes("furniture")) {
+    return "laptop";
+  }
+
+  return "headphones";
+}
+
+function mapOrdersToCartItems(orders: ApiOrder[]): CartItem[] {
+  return orders.flatMap((order) =>
+    order.items.map((item) => ({
+      id: item._id,
+      orderId: order._id,
+      name: item.product.title,
+      details: item.product.description,
+      category: item.product.category,
+      status: order.status,
+      price: item.price ?? item.product.price,
+      quantity: item.quantity,
+      icon: getIconByCategory(item.product.category),
+    })),
+  );
 }
 
 function ProductIcon({ type }: { type: CartItem["icon"] }) {
@@ -157,7 +181,6 @@ function CartRow({
   onIncrease: () => void;
 }) {
   const itemTotal = item.price * item.quantity;
-  const oldTotal = item.oldPrice * item.quantity;
 
   return (
     <article className="grid gap-4 border-b border-zinc-700 py-4 sm:grid-cols-[1fr_auto] sm:items-start">
@@ -170,8 +193,11 @@ function CartRow({
           <h3 className="truncate text-sm font-bold text-white sm:text-base">
             {item.name}
           </h3>
-          <p className="mt-0.5 text-xs font-medium text-zinc-400">
+          <p className="mt-0.5 line-clamp-2 text-xs font-medium text-zinc-400">
             {item.details}
+          </p>
+          <p className="mt-1 text-xs font-bold capitalize text-zinc-500">
+            {item.category} - {item.status} - Order #{item.orderId.slice(-6)}
           </p>
           <div className="mt-2 flex flex-wrap items-center gap-3">
             <QuantityControl
@@ -197,14 +223,12 @@ function CartRow({
       </div>
 
       <div className="text-left sm:text-right">
+        <p className="text-xs font-bold text-zinc-500">
+          {formatPrice(item.price)} each
+        </p>
         <p className="text-base font-extrabold text-white">
           {formatPrice(itemTotal)}
         </p>
-        {oldTotal > itemTotal && (
-          <p className="text-xs font-bold text-zinc-500 line-through">
-            {formatPrice(oldTotal)}
-          </p>
-        )}
       </div>
     </article>
   );
@@ -305,7 +329,40 @@ function SummaryLine({ label, value }: { label: string; value: number }) {
 }
 
 export default function CartContent() {
-  const [items, setItems] = useState(initialItems);
+  const [items, setItems] = useState<CartItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    let ignore = false;
+
+    async function getOrders() {
+      try {
+        setIsLoading(true);
+        setError("");
+
+        const response = await api.get<ApiOrder[]>("/orders/me");
+
+        if (!ignore) {
+          setItems(mapOrdersToCartItems(response.data));
+        }
+      } catch {
+        if (!ignore) {
+          setError("Could not load your cart orders.");
+        }
+      } finally {
+        if (!ignore) {
+          setIsLoading(false);
+        }
+      }
+    }
+
+    getOrders();
+
+    return () => {
+      ignore = true;
+    };
+  }, []);
 
   const itemCount = useMemo(
     () => items.reduce((total, item) => total + item.quantity, 0),
@@ -317,7 +374,7 @@ export default function CartContent() {
     [items],
   );
 
-  const updateQuantity = (id: number, direction: "increase" | "decrease") => {
+  const updateQuantity = (id: string, direction: "increase" | "decrease") => {
     setItems((currentItems) =>
       currentItems.map((item) => {
         if (item.id !== id) {
@@ -344,19 +401,39 @@ export default function CartContent() {
             <h1 className="text-base font-extrabold text-white">
               Shopping cart{" "}
               <span className="text-sm font-semibold text-zinc-400">
-                ({initialItems.length} items)
+                ({itemCount} items)
               </span>
             </h1>
 
             <div className="mt-3">
-              {items.map((item) => (
-                <CartRow
-                  key={item.id}
-                  item={item}
-                  onDecrease={() => updateQuantity(item.id, "decrease")}
-                  onIncrease={() => updateQuantity(item.id, "increase")}
-                />
-              ))}
+              {isLoading && (
+                <div className="rounded-md border border-zinc-700 bg-[#232321] p-4 text-sm font-semibold text-zinc-300">
+                  Loading your cart...
+                </div>
+              )}
+
+              {!isLoading && error && (
+                <div className="rounded-md border border-red-500/40 bg-red-500/10 p-4 text-sm font-semibold text-red-200">
+                  {error}
+                </div>
+              )}
+
+              {!isLoading && !error && items.length === 0 && (
+                <div className="rounded-md border border-zinc-700 bg-[#232321] p-4 text-sm font-semibold text-zinc-300">
+                  Your cart is empty.
+                </div>
+              )}
+
+              {!isLoading &&
+                !error &&
+                items.map((item) => (
+                  <CartRow
+                    key={item.id}
+                    item={item}
+                    onDecrease={() => updateQuantity(item.id, "decrease")}
+                    onIncrease={() => updateQuantity(item.id, "increase")}
+                  />
+                ))}
             </div>
 
             <CouponForm />
