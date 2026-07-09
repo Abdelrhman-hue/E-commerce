@@ -6,48 +6,49 @@ import logo from "../../public/imges/2-Photoroom.png";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import Link from "next/link";
 import { useState } from "react";
-import api from "@/api/api"
+import api from "@/api/api";
+import { getAuthErrorMessage } from "@/api/authErrors";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export default function AuthPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [check, setCheck] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
-  const postData = async () => {
+  async function handleSubmit() {
+    if (!email.trim() || !password.trim()) {
+      toast.error("All fields are required");
+      return;
+    }
+
     try {
+      setIsLoading(true);
       const response = await api.post("/users/login", {
-        email,
+        email: email.trim(),
         password,
       });
-      console.log("User logged in:", response.data);
-      return response.data;
-    } catch (error) {
-      console.error("Error logging in user:", error);
-    }
-    
-  };
 
-  function handleSubmit() {
-    postData().then((data) => {
+      localStorage.setItem("user", JSON.stringify(response.data));
+      toast.success(response.data?.message || "Logged in successfully");
       router.push("/");
-      localStorage.setItem("user", JSON.stringify(data));
-    });
+      router.refresh();
+    } catch (error) {
+      toast.error(getAuthErrorMessage(error, "Server Error"));
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   function togglePasswordVisibility() {
-    if (showPassword == true) {
-      return setShowPassword(false);
-    } else {
-      return setShowPassword(true);
-    }
+    setShowPassword((current) => !current);
   }
 
   function handleEmailChange(e: React.ChangeEvent<HTMLInputElement>) {
     setEmail(e.target.value);
-
   }
 
   function handlePasswordChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -131,7 +132,16 @@ export default function AuthPage() {
           <span className="check-text">Remember me for 30 days</span>
         </label>
 
-        <button className="primary" onClick={handleSubmit}>Sign in</button>
+        <button className="primary" onClick={handleSubmit} disabled={isLoading}>
+          {isLoading ? (
+            <span className="button-loading">
+              <span className="button-spinner" />
+              Signing in...
+            </span>
+          ) : (
+            "Sign in"
+          )}
+        </button>
 
         <div className="divider">
           <span>or continue with</span>

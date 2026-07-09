@@ -8,6 +8,8 @@ import logo from "../../../public/imges/2-Photoroom.png";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import api from "@/api/api";
+import { getAuthErrorMessage } from "@/api/authErrors";
+import { toast } from "sonner";
 
 export default function RegisterPage() {
   const [firstName, setfirstName] = useState("");
@@ -18,6 +20,7 @@ export default function RegisterPage() {
   const [agree, setAgree] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [show2Password, setShow2Password] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const postData = async () => {
@@ -32,11 +35,23 @@ export default function RegisterPage() {
   };
 
   async function handleSubmit() {
+    if (!email.trim() || !password.trim() || !confirmPassword.trim() || !firstName.trim() || !secondName.trim()) {
+      toast.error("All fields are required");
+      return;
+    }
+
     try {
-      await postData();
-      router.replace("/Auth/ForgotPassword/verify-code");
+      setIsLoading(true);
+      const response = await postData();
+
+      localStorage.setItem("user", JSON.stringify(response.data));
+      toast.success(response.data?.message || "Logged in successfully");
+      router.push("/Auth");
+      router.refresh();
     } catch (error) {
-      console.error(error);
+      toast.error(getAuthErrorMessage(error, "Server Error"));
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -170,8 +185,15 @@ export default function RegisterPage() {
           <span className="check-text">I agree to the Terms and Privacy</span>
         </label>
 
-        <button className="primary" onClick={handleSubmit}>
-          Create account
+        <button className="primary" onClick={handleSubmit} disabled={isLoading}>
+          {isLoading ? (
+            <span className="button-loading">
+              <span className="button-spinner" />
+              Creating account...
+            </span>
+          ) : (
+            "Create account"
+          )}
         </button>
 
         <div className="divider">
