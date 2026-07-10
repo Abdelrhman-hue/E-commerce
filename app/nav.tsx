@@ -77,7 +77,7 @@ export default function Nav() {
           />
         </Link>
         <div className="group relative">
-          <Link href={user ? "#" : "/Auth"} className="flex items-center gap-1">
+          <Link href={user ? "/profile" : "/Auth"} className="flex items-center gap-1">
             <AccountCircleIcon className="icon" style={{ fontSize: "32px" }} />
             <span className="username mr-2">{user?.fristname ?? "Guest"}</span>
           </Link>
