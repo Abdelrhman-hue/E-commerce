@@ -4,7 +4,7 @@ import { FiEdit2 } from "react-icons/fi";
 import React, { useEffect, useState } from "react";
 
 export default function AccountPage() {
-  const [user, setUser] = useState({fristname: "", email: "" ,lastname: "", phone: "", dateOfBirth: "", gender: ""});
+  const [user, setUser] = useState({fristname: "", email: "" ,lastname: "", phoneNumber: "", dateOfBirth: "", gender: ""});
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -12,6 +12,7 @@ export default function AccountPage() {
       if (res.status === 200) {
         // Handle successful response
         const user = res.data.data;
+        console.log(user);
         setUser(user);
       }
     };
@@ -59,7 +60,7 @@ export default function AccountPage() {
 
         <div>
           <p className="mb-1 text-sm text-gray-400">Phone number</p>
-          <h2 className="text-xl font-semibold">{user.phone?user.phone:"Not specified"}</h2>
+          <h2 className="text-xl font-semibold">{user.phoneNumber?user.phoneNumber:"Not specified"}</h2>
         </div>
 
         <div>

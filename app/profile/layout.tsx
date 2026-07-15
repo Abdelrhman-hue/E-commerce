@@ -3,6 +3,7 @@
 import api from "@/api/api";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 import {
   FaRegUser,
   FaRegHeart,
@@ -12,7 +13,7 @@ import {
 } from "react-icons/fa";
 import { HiOutlineClipboardList } from "react-icons/hi";
 import { toast } from "sonner";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import React from "react";
 
 // type ApiOrder = {
@@ -46,6 +47,7 @@ export default function ProfileLayout({
     fristname: string;
     email: string;
   } | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     async function getOrders() {
@@ -81,6 +83,7 @@ export default function ProfileLayout({
           // Handle successful logout
           toast.success("Logged out successfully");
         }
+        router.push("/Auth");
       })
       .catch((error) => {
         // Handle error

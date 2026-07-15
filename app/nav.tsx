@@ -19,15 +19,21 @@ interface User {
 
 export default function Nav() {
   const [user, setUser] = useState<User | null>(null);
+  const [orders, setOrders] = useState([]);
   const router = useRouter();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await api.get("/users/me").then((res) => {
-          // console.log(res.data);
+          console.log(res.data);
           setUser(res.data.data);
+        });
 
+        const order = await api.get("/orders/me").then((res) => {
+          console.log(res.data);
+          // Handle successful response
+          setOrders(res.data);
         });
 
         // setUser(response.data); // أو response.data حسب شكل الـ API
@@ -71,13 +77,18 @@ export default function Nav() {
 
       <div className="right">
         <Link href="/cart">
-          <LocalGroceryStoreRoundedIcon
-            className="icon"
-            style={{ fontSize: "32px" }}
-          />
+          <LocalGroceryStoreRoundedIcon  className="icon"
+            style={{ fontSize: "32px" }}>
+          </LocalGroceryStoreRoundedIcon>
+            <span className="-ml-2 pl-2 pr-2 pt-0.5 pb-0.5 align-text-center bg-green-500 text-zinc-100 rounded-2xl text-[12px] ">
+              {orders.length}
+            </span>
         </Link>
         <div className="group relative">
-          <Link href={user ? "/profile" : "/Auth"} className="flex items-center gap-1">
+          <Link
+            href={user ? "/profile" : "/Auth"}
+            className="flex items-center gap-1"
+          >
             <AccountCircleIcon className="icon" style={{ fontSize: "32px" }} />
             <span className="username mr-2">{user?.fristname ?? "Guest"}</span>
           </Link>

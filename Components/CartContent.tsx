@@ -301,14 +301,6 @@ function OrderSummary({
         </div>
       </div>
 
-      <button
-        type="button"
-        className="mt-4 flex h-12 w-full items-center justify-center gap-2 rounded-md border border-zinc-600 text-base font-extrabold text-white transition hover:bg-zinc-700"
-      >
-        Proceed to checkout
-        <FiArrowRight className="h-4 w-4" />
-      </button>
-
       <div className="mt-4 grid grid-cols-3 gap-2 text-center text-[11px] font-semibold leading-tight text-zinc-500">
         <span className="flex items-center justify-center gap-1">
           <FiLock className="h-3 w-3" />
@@ -335,6 +327,12 @@ function SummaryLine({ label, value }: { label: string; value: number }) {
     </div>
   );
 }
+// -----------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------------------------
 
 export default function CartContent() {
   const [items, setItems] = useState<CartItem[]>([]);
@@ -399,6 +397,12 @@ export default function CartContent() {
     );
   };
 
+  const checkout = async () => {
+    await api.post("/payment/checkout", {
+      items,
+    });
+  };
+
   return (
     <main className="flex min-h-[calc(100vh-120px)] items-start justify-center bg-[#1f201e] px-3 py-6 text-white sm:px-5 lg:px-8">
       <section className="w-full max-w-5xl overflow-hidden rounded-lg border border-zinc-700 bg-[#2d2e2b] shadow-2xl shadow-black/30">
@@ -448,6 +452,14 @@ export default function CartContent() {
           </div>
 
           <OrderSummary subtotal={subtotal} itemCount={itemCount} />
+          <button
+            onClick={checkout}
+            type="button"
+            className="mt-4 flex h-12 w-full items-center justify-center gap-2 rounded-md border border-zinc-600 text-base font-extrabold text-white transition hover:bg-zinc-700"
+          >
+            Proceed to checkout
+            <FiArrowRight className="h-4 w-4" />
+          </button>
         </div>
       </section>
     </main>

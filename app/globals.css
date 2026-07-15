@@ -1,6 +1,7 @@
 @import "tailwindcss";
 /* @import url('https://fonts.googleapis.com/css2?family=Monda:wght@400..700&display=swap'); */
 
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -25,6 +26,14 @@
     --background: #0a0a0a;
     --foreground: #ededed;
   }
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 0;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
 }
 
 body {
@@ -90,7 +99,6 @@ body {
   background: rgba(215, 215, 215, 0.451);
   transform: translateY(-1px);
 }
-
 
 .center {
   flex: 2;
@@ -895,6 +903,3 @@ body {
 }
 
 /* ------------------------------------------------------------------ */
-
-
-

@@ -7,6 +7,10 @@ import logoA from "../../../public/logo/icons8-apple-logo-50.png";
 import logo from "../../../public/imges/2-Photoroom.png";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useRouter } from "next/navigation";
+import { FaCalendarAlt } from "react-icons/fa";
+import { useRef } from "react";
+import PhoneInput from "react-phone-number-input";
+import "react-phone-number-input/style.css";
 import api from "@/api/api";
 import { getAuthErrorMessage } from "@/api/authErrors";
 import { toast } from "sonner";
@@ -17,16 +21,21 @@ export default function RegisterPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState<string | undefined>();
+  const [dateofBirth, setDateofBirth] = useState("");
   const [agree, setAgree] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [show2Password, setShow2Password] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const dateRef = useRef<HTMLInputElement>(null);
 
   const postData = async () => {
     const response = await api.post("/users/register", {
       firstname: firstName,
       lastname: secondName,
+      phoneNumber: phoneNumber,
+      dateOfBirth: dateofBirth,
       email,
       password,
     });
@@ -35,7 +44,15 @@ export default function RegisterPage() {
   };
 
   async function handleSubmit() {
-    if (!email.trim() || !password.trim() || !confirmPassword.trim() || !firstName.trim() || !secondName.trim()) {
+    if (
+      !email.trim() ||
+      !password.trim() ||
+      !confirmPassword.trim() ||
+      !firstName.trim() ||
+      !secondName.trim() ||
+      !phoneNumber ||
+      !dateofBirth
+    ) {
       toast.error("All fields are required");
       return;
     }
@@ -71,6 +88,8 @@ export default function RegisterPage() {
     }
   }
 
+
+
   function handleFirstNameChange(e: React.ChangeEvent<HTMLInputElement>) {
     setfirstName(e.target.value);
   }
@@ -93,6 +112,14 @@ export default function RegisterPage() {
 
   function handleAgreeChange(e: React.ChangeEvent<HTMLInputElement>) {
     setAgree(e.target.checked);
+  }
+
+  function handleDateChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setDateofBirth(e.target.value);
+  }
+
+  function handlePhoneNumberChange(value: string | undefined) {
+    setPhoneNumber(value);
   }
 
   return (
@@ -130,6 +157,42 @@ export default function RegisterPage() {
             />
           </div>
         </label>
+
+        <div className="field w-full">
+          <label htmlFor="phone" className="label-text">
+            Phone Number
+          </label>
+          <div className="input">
+            <PhoneInput
+              placeholder="Enter phone number"
+              international
+              defaultCountry="EG"
+              value={phoneNumber}
+              onChange={handlePhoneNumberChange}
+            />
+          </div>
+        </div>
+
+        <div className="field">
+          <label htmlFor="dateOfBirth" className=" label-text">
+            Date of Birth
+          </label>
+          <div className="relative">
+            <input
+              ref={dateRef}
+              type="date"
+              className="w-full rounded-lg bg-[#2c2c2c] px-4 py-3 pr-12 md-2 text-white"
+              value={dateofBirth}
+              onChange={handleDateChange}
+            />
+
+            <FaCalendarAlt
+              size={20}
+              onClick={() => dateRef.current?.showPicker()}
+              className="absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer text-gray-400 hover:text-white"
+            />
+          </div>
+        </div>
 
         <label className="field">
           <div className="label-text">Email address</div>
