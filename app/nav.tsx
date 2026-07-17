@@ -30,10 +30,10 @@ export default function Nav() {
           setUser(res.data.data);
         });
 
-        const order = await api.get("/orders/me").then((res) => {
-          console.log(res.data);
+        const order = await api.get("/Mycart").then((res) => {
+          console.log(res.data.data.items);
           // Handle successful response
-          setOrders(res.data);
+          setOrders(res.data.data.items);
         });
 
         // setUser(response.data); // أو response.data حسب شكل الـ API
@@ -81,7 +81,7 @@ export default function Nav() {
             style={{ fontSize: "32px" }}>
           </LocalGroceryStoreRoundedIcon>
             <span className="-ml-2 pl-2 pr-2 pt-0.5 pb-0.5 align-text-center bg-green-500 text-zinc-100 rounded-2xl text-[12px] ">
-              {orders.length}
+              {orders.length ?? 0}
             </span>
         </Link>
         <div className="group relative">

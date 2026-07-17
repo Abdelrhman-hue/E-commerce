@@ -8,13 +8,9 @@ export default function ProductDetails({ product }) {
 
   async function handleAddToCart() {
     try {
-      await api.post("/orders", {
-        items: [
-          {
-            product: product._id,
-            quantity: quantity,
-          },
-        ],
+      await api.post("/cart", {
+          product: product._id,
+          quantity: quantity,
       });
     } catch (error) {
       console.error("Error adding to cart:", error);
