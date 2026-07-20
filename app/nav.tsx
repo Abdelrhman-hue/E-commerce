@@ -19,6 +19,7 @@ interface User {
 
 export default function Nav() {
   const [user, setUser] = useState<User | null>(null);
+  const [search, setSearch] = useState("");
   const [orders, setOrders] = useState([]);
   const router = useRouter();
 
@@ -46,6 +47,12 @@ export default function Nav() {
     router.refresh();
   }, []);
 
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    router.push(`/search?q=${encodeURIComponent(search)}`);
+  };
+
   // console.log("user", user);
   return (
     <nav className="navbar  ">
@@ -72,17 +79,30 @@ export default function Nav() {
       </div>
 
       <div className="center">
-        <input className="search" type="text" placeholder="Search..." />
+        <form onSubmit={handleSearch} className="center">
+          <input
+            className="search mr-4"
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search..."
+          />
+
+          <button className="cursor-pointer" type="submit">
+            Search
+          </button>
+        </form>
       </div>
 
       <div className="right">
         <Link href="/cart">
-          <LocalGroceryStoreRoundedIcon  className="icon"
-            style={{ fontSize: "32px" }}>
-          </LocalGroceryStoreRoundedIcon>
-            <span className="-ml-2 pl-2 pr-2 pt-0.5 pb-0.5 align-text-center bg-green-500 text-zinc-100 rounded-2xl text-[12px] ">
-              {orders.length ?? 0}
-            </span>
+          <LocalGroceryStoreRoundedIcon
+            className="icon"
+            style={{ fontSize: "32px" }}
+          ></LocalGroceryStoreRoundedIcon>
+          <span className="-ml-2 pl-2 pr-2 pt-0.5 pb-0.5 align-text-center bg-green-500 text-zinc-100 rounded-2xl text-[12px] ">
+            {orders.length ?? 0}
+          </span>
         </Link>
         <div className="group relative">
           <Link

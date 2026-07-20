@@ -1,23 +1,59 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
-import axios from "axios";
+import api from "@/api/api";
 import { Suspense } from "react";
+import { useSearchParams } from "next/navigation";
+import { useState, useEffect } from "react";
 
-export default async function Shop({
-  searchParams,
-}: {
-  searchParams: Promise<{ page?: string ; limit?: string }>;
-}) {
-  const params = await searchParams;
+type product = {
+  id: string;
+  title: string;
+  description: string;
+  price: number;
+  oldPrice?: number;
+  thumbnail?: string | undefined;
+  category?: string;
+};
 
-  const page = Number(params.page) || 1;
-  const limit = Number(params.limit) || 10;
+export default  function Shop() {
+  const searchParams = useSearchParams();
+  const [products, setProducts] = useState([]);
+  
 
-  // Simulate loading
-  await new Promise((res) => setTimeout(res, 3000));
- const {data} = await axios.get(
-  `http://localhost:5000/products?page=${page}&limit=${limit}`
-);
+  const page = Number(searchParams.get("page") || 1);
+  const limit = Number(searchParams.get("limit") || 10);
+
+  const categories = searchParams.getAll("category");
+  const brands = searchParams.getAll("brand");
+
+  const minPrice = searchParams.get("minPrice");
+  const maxPrice = searchParams.get("maxPrice");
+
+  const rating = searchParams.get("rating");
+  const inStock = searchParams.get("inStock");
+  useEffect(() => {
+    const fetchProducts = async () => {
+      const { data } = await api.get("/products", {
+        params: {
+          page,
+          limit,
+          category: categories,
+          brand: brands,
+          minPrice,
+          maxPrice,
+          rating,
+          inStock,
+        },
+      });
+
+      setProducts(data.products);
+      // setTotalPages(data.totalPages);
+    };
+
+    fetchProducts();
+  }, [searchParams]);
   return (
     <div className="container mx-auto py-5">
       <div style={styles.controls}>
@@ -26,20 +62,69 @@ export default async function Shop({
           <option>Price: Low to High</option>
         </select>
       </div>
-      <Suspense key={page} fallback={<div className="text-center text-gray-500">Loading products...</div>}>
-        <div className="grid h-190 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 overflow-clip">
-          {data.map((i: { id: number; thumbnail: string }) => (
-            <div
-              key={i.id}
-              className="h-60 w-80 bg-white rounded hover:scale-105 transition-transform"
+      <Suspense
+        key={page}
+        fallback={
+          <div className="text-center text-gray-500">Loading products...</div>
+        }
+      >
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {products.map((product: product) => (
+            <Link
+              key={product.id}
+              href={`/shop/${product.id}`}
+              className="group overflow-hidden rounded-2xl border border-zinc-700 bg-[#2b2b2b] transition hover:border-blue-500 hover:shadow-xl"
             >
-              <Link
-                href={`/shop/${i.id}`}
-                className="flex justify-center items-center h-full w-full text-center leading-60 text-white font-semibold"
-              >
-                <Image src={i.thumbnail} alt="image" width={200} height={200} />
-              </Link>
-            </div>
+              {/* Product Image */}
+              <div className="relative flex aspect-square items-center justify-center overflow-hidden bg-[#222] p-6">
+                <Image
+                  src={product.thumbnail}
+                  alt={product.title}
+                  width={180}
+                  height={180}
+                  className="object-contain transition duration-300 group-hover:scale-105"
+                />
+
+                {/* Badge */}
+                <span className="absolute left-3 top-3 rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">
+                  New
+                </span>
+              </div>
+
+              {/* Product Info */}
+              <div className="space-y-2 p-4">
+                <h3 className="line-clamp-1 text-lg font-semibold text-white">
+                  {product.title}
+                </h3>
+
+                <p className="text-sm text-zinc-400">{product.category}</p>
+
+                <p className="line-clamp-2 text-sm text-zinc-500">
+                  {product.description}
+                </p>
+
+                <div className="flex items-center justify-between pt-2">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xl font-bold text-blue-500">
+                      ${product.price}
+                    </span>
+
+                    {product.oldPrice && (
+                      <span className="text-sm text-zinc-500 line-through">
+                        ${product.oldPrice}
+                      </span>
+                    )}
+                  </div>
+
+                  <Link
+                    href={`/shop/${product.id}`}
+                    className="flex p-2 items-center justify-center rounded-xl border border-zinc-600 text-xl text-white transition hover:bg-white hover:text-black"
+                  >
+                    More Details
+                  </Link>
+                </div>
+              </div>
+            </Link>
           ))}
         </div>
       </Suspense>

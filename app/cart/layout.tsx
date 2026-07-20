@@ -17,7 +17,9 @@ export default function CheckoutStepper({
         return 1;
       case "/cart/payment":
         return 2;
-      case "/cart/review":
+      case "/cart/review/cancel":
+        return 3;
+      case "/cart/review/success":
         return 3;
       default:
         return 0;

@@ -1,15 +1,14 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function ShopPage({ children }: { children: React.ReactNode }) {
   const categories = [
-    { name: "Electronics", count: 412 },
-    { name: "Fashion", count: 289 },
-    { name: "Home & Living", count: 195 },
-    { name: "Sports", count: 143 },
-    { name: "Beauty", count: 98 },
+    { name: "furniture", count: 289 },
+    { name: "groceries", count: 195 },
+    { name: "beauty", count: 98 },
   ];
 
   const brands = [
@@ -19,17 +18,47 @@ export default function ShopPage({ children }: { children: React.ReactNode }) {
     { name: "Nike", count: 28 },
   ];
 
-  const [selectedCats, setSelectedCats] = useState<string[]>([]);
-  const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
-  const [minPrice, setMinPrice] = useState<number>(0);
-  const [maxPrice, setMaxPrice] = useState<number>(1000);
-  const [rating, setRating] = useState<number | null>(null);
-  const [inStock, setInStock] = useState<boolean>(true);
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
-  // pagination state
-  const [currentPage, setCurrentPage] = useState<number>(1);
+  const selectedCats = searchParams.getAll("category");
+  const selectedBrands = searchParams.getAll("brand");
+
+  const minPrice = Number(searchParams.get("minPrice") || 0);
+  const maxPrice = Number(searchParams.get("maxPrice") || 1000);
+
+  const rating = Number(searchParams.get("rating")) || null;
+
+  const inStock = searchParams.get("inStock") === "true";
+
+  const currentPage = Number(searchParams.get("page") || 1);
+  const params = new URLSearchParams(searchParams.toString());
+
+  const num = Number(searchParams.get("num") || 5);
+  const limit = Number(searchParams.get("limit") || 10);
   const totalPages = 12;
-  const limit = 10;
+  params.set("page", String(num));
+  params.set("limit", String(limit));
+
+
+  const updateQuery = (
+    key: string,
+    value: string | number | boolean | string[],
+  ) => {
+    const params = new URLSearchParams(searchParams.toString());
+
+    params.delete(key);
+
+    if (Array.isArray(value)) {
+      value.forEach((v) => params.append(key, v));
+    } else {
+      params.set(key, String(value));
+    }
+
+    params.set("page", "1");
+
+    router.push(`/shop?${params.toString()}`);
+  };
 
   function toggleArrayItem(
     arr: string[],
@@ -60,9 +89,13 @@ export default function ShopPage({ children }: { children: React.ReactNode }) {
               <input
                 type="checkbox"
                 checked={selectedCats.includes(c.name)}
-                onChange={() =>
-                  toggleArrayItem(selectedCats, setSelectedCats, c.name)
-                }
+                onChange={() => {
+                  const cats = selectedCats.includes(c.name)
+                    ? selectedCats.filter((i) => i !== c.name)
+                    : [...selectedCats, c.name];
+
+                  updateQuery("category", cats);
+                }}
                 style={styles.checkbox}
               />
               <span style={styles.labelText}>{c.name}</span>
@@ -78,7 +111,9 @@ export default function ShopPage({ children }: { children: React.ReactNode }) {
             min={0}
             max={5000}
             value={maxPrice}
-            onChange={(e) => setMaxPrice(Number(e.target.value))}
+            onChange={(e) => {
+              updateQuery("maxPrice", Number(e.target.value));
+            }}
             style={styles.range}
           />
           <div style={styles.priceInputs}>
@@ -96,22 +131,25 @@ export default function ShopPage({ children }: { children: React.ReactNode }) {
                 type="radio"
                 name="rating"
                 checked={rating === r}
-                onChange={() => setRating(r)}
+                onChange={() => updateQuery("rating", r)}
                 style={styles.radio}
               />
+
               <span style={styles.stars}>
                 {Array.from({ length: r }).map((_, i) => (
                   <span key={i} style={{ color: "#f5b334" }}>
                     ★
                   </span>
                 ))}
+
                 {Array.from({ length: 5 - r }).map((_, i) => (
                   <span key={i} style={{ color: "#777" }}>
                     ★
                   </span>
                 ))}
               </span>
-              <span style={styles.labelText}>{r}+ </span>
+
+              <span style={styles.labelText}>{r}+</span>
             </label>
           ))}
         </div>
@@ -123,11 +161,16 @@ export default function ShopPage({ children }: { children: React.ReactNode }) {
               <input
                 type="checkbox"
                 checked={selectedBrands.includes(b.name)}
-                onChange={() =>
-                  toggleArrayItem(selectedBrands, setSelectedBrands, b.name)
-                }
+                onChange={() => {
+                  const newBrands = selectedBrands.includes(b.name)
+                    ? selectedBrands.filter((i) => i !== b.name)
+                    : [...selectedBrands, b.name];
+
+                  updateQuery("brand", newBrands);
+                }}
                 style={styles.checkbox}
               />
+
               <span style={styles.labelText}>{b.name}</span>
               <span style={styles.count}>{b.count}</span>
             </label>
@@ -140,18 +183,20 @@ export default function ShopPage({ children }: { children: React.ReactNode }) {
             <input
               type="checkbox"
               checked={inStock}
-              onChange={() => setInStock(!inStock)}
+              onChange={() => updateQuery("inStock", !inStock)}
               style={styles.checkbox}
             />
+
             <span style={styles.labelText}>In stock</span>
           </label>
           <label style={styles.row}>
             <input
               type="checkbox"
-              checked={!inStock}
-              onChange={() => setInStock(!inStock)}
+              checked={inStock}
+              onChange={() => updateQuery("inStock", !inStock)}
               style={styles.checkbox}
             />
+
             <span style={styles.labelText}>Out of stock</span>
           </label>
         </div>
@@ -162,12 +207,7 @@ export default function ShopPage({ children }: { children: React.ReactNode }) {
             style={styles.clearLink}
             onClick={(e) => {
               e.preventDefault();
-              setSelectedCats([]);
-              setSelectedBrands([]);
-              setMinPrice(0);
-              setMaxPrice(1000);
-              setRating(null);
-              setInStock(true);
+              router.push("/shop");
             }}
           >
             Clear all filters ↗
@@ -191,7 +231,6 @@ export default function ShopPage({ children }: { children: React.ReactNode }) {
         {/* pagination */}
         <div style={styles.paginationWrap}>
           <div style={styles.pagination}>
-
             {pagesToShow.map((p, idx) => {
               if (p === "...") {
                 return (
@@ -205,10 +244,7 @@ export default function ShopPage({ children }: { children: React.ReactNode }) {
               return (
                 <Link
                   key={num}
-                  href={`/shop?limit=${limit || 10}&page=${num}`}
-                  onClick={() => {
-                    setCurrentPage(num);
-                  }}
+                  href={`/shop?${params.toString()}`}
                   style={
                     active
                       ? { ...styles.pageButton, ...styles.activePage }
@@ -217,9 +253,7 @@ export default function ShopPage({ children }: { children: React.ReactNode }) {
                 >
                   {num}
                 </Link>
-                
               );
-
             })}
           </div>
         </div>
@@ -343,7 +377,9 @@ const styles: { [k: string]: React.CSSProperties } = {
     color: "#ddd",
     cursor: "pointer",
     padding: "0 10px",
-    fontSize: 14,
+    textAlign: "center",
+    alignItems: "center",
+    fontSize: 18,
   },
   activePage: {
     background: "#FD9E02",

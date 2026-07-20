@@ -8,8 +8,8 @@ export default async function Home() {
   // Simulate loading
   await new Promise((res) => setTimeout(res, 3000));
 
-
-const { data } = await api.get("/products");
+  const { data } = await api.get("/products");
+  const products = data.products;
 
   const category = [
     "All",
@@ -131,7 +131,7 @@ const { data } = await api.get("/products");
             View All
           </Link>
           <div className="flex flex-wrap justify-center gap-4  ml-8">
-            {data.map((i: { id: number; thumbnail: string }) => (
+            {products.map((i: { id: number; thumbnail: string }) => (
               <div
                 key={i.id}
                 className="h-40 w-50 bg-white rounded hover:scale-105 transition-transform"
