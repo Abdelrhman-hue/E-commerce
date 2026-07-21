@@ -7,53 +7,60 @@ import { FiImage } from "react-icons/fi";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-type CartItemProps = {
-  item: {
+type CartItem = {
+  _id: string;
+  quantity: number;
+  product: {
     _id: string;
     title: string;
     description: string;
+    category: string;
     price: number;
     oldPrice?: number;
-    quantity: number;
   };
-
-  onDelete: () => void;
 };
-function CartItem({ item, onDelete }: CartItemProps) {
+
+type CartItemProps = {
+  item: CartItem;
+};
+function CartItem({ item }: CartItemProps) {
   return (
-    <div className="flex items-center justify-between border-b border-t mb-3 border-gray-700 py-6 rounded-3xl mr-1">
-      {/* Left */}
+    <div className="mb-3 flex items-center justify-between rounded-3xl border-y border-gray-700 py-6">
       <div className="flex items-center gap-5">
         <div className="flex h-24 w-24 items-center justify-center rounded-xl bg-zinc-800">
           <FiImage className="text-4xl text-zinc-500" />
         </div>
 
         <div>
-          <h2 className="text-lg font-semibold text-white">{item.title}</h2>
+          <h2 className="text-lg font-semibold text-white">
+            {item.product.title}
+          </h2>
 
-          <p className="text-sm text-gray-400 w-[90%]">{item.description}</p>
-
-          <p className="mt-2 text-sm text-gray-300">
-            Quantity: {item.quantity}
+          <p className="w-[90%] text-sm text-gray-400">
+            {item.product.description}
           </p>
 
-          <button
-            onClick={onDelete}
-            className="mt-3 flex items-center gap-2 text-sm text-red-500 hover:text-red-400"
-          >
+          <p className="mt-2 text-sm text-gray-300">
+            Category: {item.product.category}
+          </p>
+
+          <p className="text-sm text-gray-300">Quantity: {item.quantity}</p>
+
+          <button className="mt-3 flex items-center gap-2 text-sm text-red-500 hover:text-red-400">
             <FiTrash2 />
             Remove
           </button>
         </div>
       </div>
 
-      {/* Right */}
-      <div className="text-right">
-        <h2 className="text-xl font-bold text-white mr-2">${item.price}</h2>
+      <div className="mr-2 text-right">
+        <h2 className="text-xl font-bold text-white">
+          ${(item.product.price * item.quantity).toFixed(2)}
+        </h2>
 
-        {item.oldPrice && (
-          <p className="text-gray-500 line-through">${item.oldPrice}</p>
-        )}
+        <p className="text-sm text-gray-400">
+          ${item.product.price} × {item.quantity}
+        </p>
       </div>
     </div>
   );
@@ -140,15 +147,19 @@ function OrderSummary({ subtotal, shipping, tax }: OrderSummaryProps) {
 }
 
 export default function CartPage() {
-  const [cartItems, setCartItems] = useState<CartItemProps["item"][]>([]);
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [totalPrice, setTotalPrice] = useState(0);
 
   useEffect(() => {
     const fetchCartItems = async () => {
-      const response = await api.get("/Mycart");
-      console.log("Cart items:", response.data.data);
-      setCartItems(response.data.data.items);
-      setTotalPrice(response.data.data.totalPrice);
+      try {
+        const { data } = await api.get("/Mycart");
+
+        setCartItems(data.data.items);
+        setTotalPrice(data.data.totalPrice);
+      } catch (error) {
+        console.error(error);
+      }
     };
 
     fetchCartItems();
@@ -164,18 +175,7 @@ export default function CartPage() {
       <div className="grid grid-cols-2 lg:grid-cols-3 p-4">
         <div className="lg:col-span-2 ">
           {cartItems.map((item) => (
-            <CartItem
-              key={item._id}
-              item={{
-                _id: item._id,
-                title: item.product.title,
-                description: item.product.description,
-                price: item.product.price,
-                oldPrice: item.product.oldPrice,
-                quantity: item.quantity,
-              }}
-              onDelete={() => {}}
-            />
+            <CartItem key={item._id} item={item} />
           ))}
         </div>
 
