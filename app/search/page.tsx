@@ -6,15 +6,24 @@ import { useState, useEffect, use } from "react";
 import ProductCard from "@/Components/ProductCard";
 import api from "@/api/api";
 
+type Product = {
+  _id: string;
+  title: string;
+  description: string;
+  category: string;
+  price: number;
+  oldPrice?: number;
+};
+
 export default function SearchPage() {
   const searchParams = useSearchParams();
-  const [products, setProducts] = useState([]);
-  const [count, setcount] =useState(0)
+  const [products, setProducts] = useState<Product[]>([]);
+  const [count, setcount] = useState(0);
   const q = searchParams.get("q");
 
   useEffect(() => {
     const fetchProducts = async () => {
-      if (!q || q == "") {
+      if (!q) {
         return notFound;
       }
 
@@ -25,7 +34,7 @@ export default function SearchPage() {
       });
 
       setProducts(data.products);
-      setcount(data.count)
+      setcount(data.count);
     };
 
     fetchProducts();
@@ -38,7 +47,17 @@ export default function SearchPage() {
 
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 ml-6 mb-6 mr-6">
         {products.map((product) => (
-          <ProductCard key={product.id} product={product} />
+          <ProductCard
+            key={product._id}
+            product={{
+              id: product._id,
+              title: product.title,
+              description: product.description,
+              price: product.price,
+              oldPrice: product.oldPrice,
+              category: product.category,
+            }}
+          />
         ))}
       </div>
     </>
