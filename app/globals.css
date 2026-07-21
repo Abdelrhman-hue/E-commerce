@@ -156,7 +156,7 @@ body {
   transform: translateY(-1px);
 }
 
-.icon :global(svg) {
+.icon {
   font-size: 100px;
 }
 

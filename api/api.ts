@@ -2,7 +2,7 @@ import axios from "axios";
 
 
 export default axios.create({
-  baseURL: "http://localhost:5000/",
+  baseURL: "https://back-end-production-28f2.up.railway.app/",
   withCredentials: true,
 });
 
