@@ -17,10 +17,9 @@ type product = {
   category?: string;
 };
 
-export default  function Shop() {
+export default function Shop() {
   const searchParams = useSearchParams();
   const [products, setProducts] = useState([]);
-  
 
   const page = Number(searchParams.get("page") || 1);
   const limit = Number(searchParams.get("limit") || 10);
@@ -78,7 +77,7 @@ export default  function Shop() {
               {/* Product Image */}
               <div className="relative flex aspect-square items-center justify-center overflow-hidden bg-[#222] p-6">
                 <Image
-                  src={product.thumbnail}
+                  src={product.thumbnail || "/images/placeholder.png"}
                   alt={product.title}
                   width={180}
                   height={180}
