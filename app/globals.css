@@ -515,7 +515,7 @@ body {
 }
 .thumb {
   width: 64px;
-  height: 48px;
+  height: 55px;
   background: #141414;
   border-radius: 6px;
   display: flex;

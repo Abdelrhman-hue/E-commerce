@@ -1,7 +1,19 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import ProductDetails from "@/Components/productDetalis";
+import Link from "next/link";
+import { FiImage } from "react-icons/fi";
+import api from "@/api/api";
 
+type product = {
+  id: string;
+  title: string;
+  description: string;
+  price: number;
+  oldPrice?: number;
+  thumbnail?: string | undefined;
+  category?: string;
+};
 
 export default async function ProductPage({
   params,
@@ -10,16 +22,19 @@ export default async function ProductPage({
 }) {
   const { id } = await params;
 
-  const res = await fetch(`http://localhost:5000/products/${id}`);
+  const res = await fetch(
+    `https://back-end-production-28f2.up.railway.app/products/${id}`,
+  );
   if (!res.ok) {
     return notFound();
   }
 
+  const response = await api.get("/products");
+  const products = response.data.products;
+
   const product = await res.json();
+  console.log(products);
 
-  
-
-  
   return (
     <div className="product-page">
       <h1 className="title">Product {product.category}</h1>
@@ -120,18 +135,38 @@ export default async function ProductPage({
         </section>
       </div>
 
-
-
-          
       <section className="related">
-        <h3>You may also like</h3>
-        <div className="related-list">
-          {Array.from({ length: 3 }).map((_, i) => (
-            <div key={i} className="related-card">
-              <div className="r-img" />
-              <div className="r-title">Product {i + 1}</div>
-              <div className="r-price">$1,299</div>
-            </div>
+        <h3 className="mb-6 text-2xl font-bold">You may also like</h3>
+
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {products.slice(0, 3).map((product: product) => (
+            <Link
+              key={product.id}
+              href={`/shop/${product.id}`}
+              className="rounded-xl border border-zinc-700 bg-zinc-900 p-4 transition hover:scale-105 hover:border-orange-500"
+            >
+              <div className="mb-4 flex aspect-square items-center justify-center rounded-lg bg-zinc-800">
+                {product.thumbnail ? (
+                  <Image
+                    src={product.thumbnail}
+                    alt={product.title}
+                    width={180}
+                    height={180}
+                    className="object-contain"
+                  />
+                ) : (
+                  <FiImage className="text-6xl text-zinc-600" />
+                )}
+              </div>
+
+              <h4 className="line-clamp-1 text-lg font-semibold">
+                {product.title}
+              </h4>
+
+              <p className="mt-2 text-xl font-bold text-orange-500">
+                ${product.price}
+              </p>
+            </Link>
           ))}
         </div>
       </section>
