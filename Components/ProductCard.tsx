@@ -8,7 +8,7 @@ type ProductProps = {
     description: string;
     price: number;
     oldPrice?: number;
-    thumbnail?: string;
+    images?: string[];
     category?: string;
   };
 };
@@ -21,7 +21,7 @@ export default function ProductCard({ product }: ProductProps) {
     >
       <div className="relative aspect-square overflow-hidden bg-zinc-800">
         <Image
-          src={product.thumbnail || "/placeholder.png"}
+          src={product.images?.[0] ?? "/placeholder.png"}
           alt={product.title}
           fill
           className="object-cover transition duration-300 group-hover:scale-105"
@@ -53,12 +53,9 @@ export default function ProductCard({ product }: ProductProps) {
           )}
         </div>
 
-        <Link
-          href={`/shop/${product.id}`}
-          className="w-full rounded-xl bg-white py-3 p-4 font-semibold text-black transition hover:bg-gray-200"
-        >
+        <div className="rounded-xl border border-zinc-600 px-4 py-2 text-sm text-white transition group-hover:bg-white group-hover:text-black">
           More Details
-        </Link>
+        </div>
       </div>
     </Link>
   );

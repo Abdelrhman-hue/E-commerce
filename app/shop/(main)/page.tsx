@@ -115,12 +115,9 @@ export default function Shop() {
                     )}
                   </div>
 
-                  <Link
-                    href={`/shop/${product.id}`}
-                    className="flex p-2 items-center justify-center rounded-xl border border-zinc-600 text-xl text-white transition hover:bg-white hover:text-black"
-                  >
+                  <div className="rounded-xl border border-zinc-600 px-4 py-2 text-sm text-white transition group-hover:bg-white group-hover:text-black">
                     More Details
-                  </Link>
+                  </div>
                 </div>
               </div>
             </Link>

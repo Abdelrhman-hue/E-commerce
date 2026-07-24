@@ -497,10 +497,10 @@ body {
   align-items: start;
 }
 .left-col {
-  background: transparent;
+  background: white;
 }
 .main-image {
-  background: #141414;
+  background: white;
   border-radius: 8px;
   padding: 18px;
   display: flex;

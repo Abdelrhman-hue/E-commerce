@@ -13,6 +13,7 @@ type Product = {
   category: string;
   price: number;
   oldPrice?: number;
+  images?: string[];
 };
 
 export default function SearchPage() {
@@ -56,6 +57,7 @@ export default function SearchPage() {
               price: product.price,
               oldPrice: product.oldPrice,
               category: product.category,
+              images: product.images,
             }}
           />
         ))}
