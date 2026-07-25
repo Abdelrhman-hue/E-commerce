@@ -18,41 +18,30 @@ type product = {
 };
 
 export default function Shop() {
-  const searchParams = useSearchParams();
+  // const searchParams = useSearchParams();
   const [products, setProducts] = useState([]);
 
-  const page = Number(searchParams.get("page") || 1);
-  const limit = Number(searchParams.get("limit") || 10);
+  // const page = Number(searchParams.get("page") || 1);
+  // const limit = Number(searchParams.get("limit") || 10);
 
-  const categories = searchParams.getAll("category");
-  const brands = searchParams.getAll("brand");
+  // const categories = searchParams.getAll("category");
+  // const brands = searchParams.getAll("brand");
 
-  const minPrice = searchParams.get("minPrice");
-  const maxPrice = searchParams.get("maxPrice");
+  // const minPrice = searchParams.get("minPrice");
+  // const maxPrice = searchParams.get("maxPrice");
 
-  const rating = searchParams.get("rating");
-  const inStock = searchParams.get("inStock");
+  // const rating = searchParams.get("rating");
+  // const inStock = searchParams.get("inStock");
   useEffect(() => {
     const fetchProducts = async () => {
-      const { data } = await api.get("/products", {
-        params: {
-          page,
-          limit,
-          category: categories,
-          brand: brands,
-          minPrice,
-          maxPrice,
-          rating,
-          inStock,
-        },
-      });
+      const { data } = await api.get("/products");
 
       setProducts(data.products);
       // setTotalPages(data.totalPages);
     };
 
     fetchProducts();
-  }, [searchParams]);
+  });
   return (
     <div className="container mx-auto py-5">
       <div style={styles.controls}>
@@ -62,7 +51,6 @@ export default function Shop() {
         </select>
       </div>
       <Suspense
-        key={page}
         fallback={
           <div className="text-center text-gray-500">Loading products...</div>
         }
