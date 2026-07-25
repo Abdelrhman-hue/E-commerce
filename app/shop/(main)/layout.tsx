@@ -40,7 +40,6 @@ export default function ShopPage({ children }: { children: React.ReactNode }) {
   params.set("page", String(num));
   params.set("limit", String(limit));
 
-
   const updateQuery = (
     key: string,
     value: string | number | boolean | string[],
@@ -117,9 +116,19 @@ export default function ShopPage({ children }: { children: React.ReactNode }) {
             style={styles.range}
           />
           <div style={styles.priceInputs}>
-            <div style={styles.priceBox}>${minPrice}</div>
+            <input
+              type="number"
+              value={minPrice}
+              onChange={(e) => updateQuery("minPrice", Number(e.target.value))}
+              style={styles.priceBox}
+            />
             <div style={{ width: 12 }} />
-            <div style={styles.priceBox}>${maxPrice}</div>
+            <input
+              type="number"
+              value={maxPrice}
+              onChange={(e) => updateQuery("maxPrice", Number(e.target.value))}
+              style={styles.priceBox}
+            />
           </div>
         </div>
 
@@ -154,28 +163,6 @@ export default function ShopPage({ children }: { children: React.ReactNode }) {
           ))}
         </div>
 
-        <h3 style={styles.sectionTitle}>Brand</h3>
-        <div style={styles.section}>
-          {brands.map((b) => (
-            <label key={b.name} style={styles.row}>
-              <input
-                type="checkbox"
-                checked={selectedBrands.includes(b.name)}
-                onChange={() => {
-                  const newBrands = selectedBrands.includes(b.name)
-                    ? selectedBrands.filter((i) => i !== b.name)
-                    : [...selectedBrands, b.name];
-
-                  updateQuery("brand", newBrands);
-                }}
-                style={styles.checkbox}
-              />
-
-              <span style={styles.labelText}>{b.name}</span>
-              <span style={styles.count}>{b.count}</span>
-            </label>
-          ))}
-        </div>
 
         <h3 style={styles.sectionTitle}>Availability</h3>
         <div style={styles.section}>

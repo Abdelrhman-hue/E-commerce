@@ -115,20 +115,13 @@ export default async function ProductPage({
             <nav>
               <button className="tab active">Description</button>
               <button className="tab">Specifications</button>
-              <button className="tab">Reviews (1,284)</button>
+              <button className="tab">Reviews ({product.rating}🌟)</button>
             </nav>
 
             <div className="tab-panel">
-              <p className="desc">
-                The MacBook Air M3 is Apples thinnest, lightest laptop —
-                redesigned from the ground up with the M3 chip. Up to 18 hours
-                of battery life, a stunning Liquid Retina display, and a
-                completely fanless design that runs silently no matter the task.
-              </p>
+              <p className="desc">{product.description}</p>
               <p className="desc muted">
-                With up to 24GB unified memory and blazing-fast storage, it
-                handles everything from everyday tasks to demanding creative
-                work with ease. Available in four beautiful finishes.
+                in stock {product.stock}
               </p>
             </div>
           </div>

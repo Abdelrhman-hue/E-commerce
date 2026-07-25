@@ -100,9 +100,13 @@ export default function Nav() {
             className="icon"
             style={{ fontSize: "32px" }}
           ></LocalGroceryStoreRoundedIcon>
-          <span className="-ml-2 pl-2 pr-2 pt-0.5 pb-0.5 align-text-center bg-green-500 text-zinc-100 rounded-2xl text-[12px] ">
-            {orders.length ?? 0}
-          </span>
+          {orders.length > 0 ? (
+            <span className="-ml-2 pl-2 pr-2 pt-0.5 pb-0.5 align-text-center bg-green-500 text-zinc-100 rounded-2xl text-[12px] ">
+              {orders.length}
+            </span>
+          ) : (
+            ""
+          )}
         </Link>
         <div className="group relative">
           <Link
