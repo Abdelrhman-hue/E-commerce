@@ -3,9 +3,9 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { FiTrash2 } from "react-icons/fi";
 import api from "@/api/api";
-import { FiImage } from "react-icons/fi";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { PackageX } from "lucide-react";
 
 type CartItem = {
   _id: string;
@@ -17,6 +17,7 @@ type CartItem = {
     category: string;
     price: number;
     oldPrice?: number;
+    images?: string[];
   };
 };
 
@@ -25,42 +26,50 @@ type CartItemProps = {
 };
 function CartItem({ item }: CartItemProps) {
   return (
-    <div className="mb-3 flex items-center justify-between rounded-3xl border-y border-gray-700 py-6">
+    <div className="mb-5 mr-1 flex items-center justify-between rounded-2xl border border-zinc-700 bg-[#1f1f1f] p-5 transition hover:border-blue-500 hover:shadow-lg">
+      {/* Left */}
       <div className="flex items-center gap-5">
-        <div className="flex h-24 w-24 items-center justify-center rounded-xl bg-zinc-800">
-          <FiImage className="text-4xl text-zinc-500" />
+        <div className="flex h-28 w-28 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-zinc-900">
+          <Image
+            src={item.product.images?.[0] || "/placeholder.png"}
+            width={100}
+            height={100}
+            alt={item.product.title}
+            className="object-contain transition duration-300 hover:scale-105"
+          />
         </div>
 
-        <div>
-          <h2 className="text-lg font-semibold text-white">
+        <div className="max-w-lg">
+          <h2 className="text-xl font-semibold text-white">
             {item.product.title}
           </h2>
 
-          <p className="w-[90%] text-sm text-gray-400">
+          <p className="mt-2 line-clamp-2 text-sm text-zinc-400">
             {item.product.description}
           </p>
 
-          <p className="mt-2 text-sm text-gray-300">
-            Category: {item.product.category}
-          </p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <span className="rounded-full bg-zinc-800 px-3 py-1 text-xs text-zinc-300">
+              {item.product.category}
+            </span>
 
-          <p className="text-sm text-gray-300">Quantity: {item.quantity}</p>
+            <span className="rounded-full bg-blue-600/20 px-3 py-1 text-xs text-blue-400">
+              Quantity: {item.quantity}
+            </span>
+          </div>
 
-          <button className="mt-3 flex items-center gap-2 text-sm text-red-500 hover:text-red-400">
-            <FiTrash2 />
+          <button className="mt-5 flex items-center gap-2 text-sm font-medium text-red-500 transition hover:text-red-400">
+            <FiTrash2 size={18} />
             Remove
           </button>
         </div>
       </div>
 
-      <div className="mr-2 text-right">
-        <h2 className="text-xl font-bold text-white">
+      {/* Right */}
+      <div className="text-right">
+        <h2 className="mt-15 text-3xl font-bold text-white">
           ${(item.product.price * item.quantity).toFixed(2)}
         </h2>
-
-        <p className="text-sm text-gray-400">
-          ${item.product.price} × {item.quantity}
-        </p>
       </div>
     </div>
   );
@@ -171,20 +180,52 @@ export default function CartPage() {
   return (
     <>
       <h1 className="mt-3 ml-2 text-2xl font-bold text-white">Shopping Cart</h1>
+      {cartItems.length < 1 ? (
+        <div className="flex min-h-[70vh] flex-col items-center justify-center px-6 text-center">
+          <div className="rounded-full bg-zinc-800 p-6">
+            <PackageX size={70} className="text-zinc-400" />
+          </div>
 
-      <div className="grid grid-cols-2 lg:grid-cols-3 p-4">
-        <div className="lg:col-span-2 ">
-          {cartItems.map((item) => (
-            <CartItem key={item._id} item={item} />
-          ))}
-        </div>
+          <h1 className="mt-6 text-3xl font-bold text-white">
+            No Orders Found
+          </h1>
 
-        <div className="lg:col-span-1 border-l border-zinc-700 pl-1">
-          <div className="sticky top-6">
-            <OrderSummary subtotal={totalPrice} shipping={0} tax={0} />
+          <p className="mt-3 max-w-md text-zinc-400">
+            Looks like you haven{"'"}t placed any orders yet. Start shopping and
+            your orders will appear here.
+          </p>
+
+          <div className="mt-8 flex gap-4">
+            <Link
+              href="/shop"
+              className="rounded-xl bg-white px-6 py-3 font-semibold text-black transition hover:bg-zinc-200"
+            >
+              Start Shopping
+            </Link>
+
+            <Link
+              href="/"
+              className="rounded-xl border border-zinc-700 px-6 py-3 text-white transition hover:bg-zinc-800"
+            >
+              Back Home
+            </Link>
           </div>
         </div>
-      </div>
+      ) : (
+        <div className="grid grid-cols-2 lg:grid-cols-3 p-4">
+          <div className="lg:col-span-2 ">
+            {cartItems.map((item) => (
+              <CartItem key={item._id} item={item} />
+            ))}
+          </div>
+
+          <div className="lg:col-span-1 border-l border-zinc-700 pl-1">
+            <div className="sticky top-6">
+              <OrderSummary subtotal={totalPrice} shipping={0} tax={0} />
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }

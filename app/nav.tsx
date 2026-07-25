@@ -55,114 +55,164 @@ export default function Nav() {
 
   // console.log("user", user);
   return (
-    <nav className="navbar  ">
-      <div className="left">
-        <div className="logoWrap">
-          <Link href="/">
-            <Image src={logo} alt="Logo" width={100} height={100} />
-          </Link>
-        </div>
-        <ul className="navLinks">
-          <li>
-            <Link href="/">Home</Link>
-          </li>
-          <li>
-            <Link href="/shop?limit=10&page=1">Shop</Link>
-          </li>
-          <li>
-            <Link href="/about">Offers</Link>
-          </li>
-          <li>
-            <Link href="/contact">About</Link>
-          </li>
-        </ul>
-      </div>
-
-      <div className="center">
-        <form onSubmit={handleSearch} className="center">
-          <input
-            className="search mr-4"
-            type="text"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search..."
-          />
-
-          <button className="cursor-pointer" type="submit">
-            Search
-          </button>
-        </form>
-      </div>
-
-      <div className="right">
-        <Link href="/cart">
-          <LocalGroceryStoreRoundedIcon
-            className="icon"
-            style={{ fontSize: "32px" }}
-          ></LocalGroceryStoreRoundedIcon>
-          {orders.length > 0 ? (
-            <span className="-ml-2 pl-2 pr-2 pt-0.5 pb-0.5 align-text-center bg-green-500 text-zinc-100 rounded-2xl text-[12px] ">
-              {orders.length}
-            </span>
-          ) : (
-            ""
-          )}
-        </Link>
-        <div className="group relative">
-          <Link
-            href={user ? "/profile" : "/Auth"}
-            className="flex items-center gap-1"
-          >
-            <AccountCircleIcon className="icon" style={{ fontSize: "32px" }} />
-            <span className="username mr-2">{user?.fristname ?? "Guest"}</span>
+    <nav className="sticky top-0 z-50 border-b border-zinc-800 bg-[#1b1b1b]/80 backdrop-blur-xl">
+      <div className="mx-auto flex h-25 max-w-8xl items-center justify-between px-6">
+        {/* Left */}
+        <div className="flex items-center gap-10">
+          <Link href="/" className="transition hover:scale-105">
+            <Image src={logo} alt="Logo" width={110} priority />
           </Link>
 
-          <div className="pointer-events-none absolute right-0 top-full z-[100] mt-3 w-64 translate-y-2 rounded-lg border border-white/10 bg-[#2d2d2b] p-4 text-left text-white opacity-0 shadow-[0_18px_45px_rgba(0,0,0,0.35)] transition duration-200 group-hover:pointer-events-auto group-hover:translate-y-0 group-hover:opacity-100">
-            <div className="absolute -top-2 right-5 h-4 w-4 rotate-45 border-l border-t border-white/10 bg-[#2d2d2b]" />
-
-            <div className="flex items-center gap-3">
-              <div className="flex h-11 w-11 items-center justify-center rounded-full border border-[#1682ee]/50 bg-[#1682ee]/15 text-sm font-bold text-[#8cc9ff]">
-                {user?.fristname?.charAt(0)?.toUpperCase() ?? "G"}
-              </div>
-
-              <div className="min-w-0">
-                <p className="truncate text-sm font-bold text-white">
-                  {user ? `${user.fristname} ${user.lastname}` : "Guest user"}
-                </p>
-                <p className="truncate text-xs font-normal text-[#b9b9b4]">
-                  {user?.email ?? "Sign in to view your account"}
-                </p>
-              </div>
-            </div>
-
-            <div className="mt-3 border-t border-white/10 pt-3">
-              <p className="text-xs font-normal text-[#b9b9b4]">Role</p>
-              <p className="mt-1 text-sm font-semibold text-white capitalize">
-                {user?.roles?.join(", ") ?? "Visitor"}
-              </p>
-            </div>
-
-            {!user ? (
+          <ul className="hidden items-center gap-8 md:flex">
+            <li>
               <Link
-                href="/Auth"
-                className="mt-4 block rounded-md border border-white/15 px-3 py-2 text-center text-sm font-bold text-white transition hover:border-[#1682ee] hover:text-[#1682ee]"
+                href="/"
+                className="text-zinc-300 transition hover:text-white"
               >
-                Sign in
+                Home
               </Link>
-            ) : null}
+            </li>
+
+            <li>
+              <Link
+                href="/shop?limit=10&page=1"
+                className="text-zinc-300 transition hover:text-blue-400"
+              >
+                Shop
+              </Link>
+            </li>
+
+            <li>
+              <Link
+                href="/offers"
+                className="text-zinc-300 transition hover:text-blue-400"
+              >
+                Offers
+              </Link>
+            </li>
+
+            <li>
+              <Link
+                href="/about"
+                className="text-zinc-300 transition hover:text-blue-400"
+              >
+                About
+              </Link>
+            </li>
+          </ul>
+        </div>
+
+        {/* Search */}
+        <form
+          onSubmit={handleSearch}
+          className="hidden flex-1 justify-center px-10 lg:flex"
+        >
+          <div className="flex w-full max-w-xl overflow-hidden rounded-xl border border-zinc-700 bg-zinc-900">
+            <input
+              type="text"
+              placeholder="Search products..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full bg-transparent px-5 py-3 text-white outline-none placeholder:text-zinc-500"
+            />
+
+            <button
+              type="submit"
+              className="bg-blue-600 px-6 font-semibold text-white transition hover:bg-blue-500"
+            >
+              Search
+            </button>
+          </div>
+        </form>
+
+        {/* Right */}
+        <div className="flex items-center gap-5">
+          {/* Cart */}
+          <Link
+            href="/cart"
+            className="relative rounded-xl p-2 transition hover:bg-zinc-800"
+          >
+            <LocalGroceryStoreRoundedIcon
+              sx={{ fontSize: 30 }}
+              className="text-white"
+            />
+
+            {orders.length > 0 && (
+              <span className="absolute -right-1 -top-1 flex h-6 w-6 items-center justify-center rounded-full bg-blue-500 text-xs font-bold text-white">
+                {orders.length}
+              </span>
+            )}
+          </Link>
+
+          {/* Profile */}
+          <div className="group relative">
+            <Link
+              href={user ? "/profile" : "/Auth"}
+              className="flex items-center gap-2 rounded-xl p-2 transition hover:bg-zinc-800"
+            >
+              <AccountCircleIcon sx={{ fontSize: 34 }} className="text-white" />
+
+              <div className="hidden text-left md:block">
+                <p className="text-sm font-semibold text-white">
+                  {user?.fristname ?? "Guest"}
+                </p>
+
+                <p className="text-xs text-zinc-400">
+                  {user ? "My Account" : "Sign In"}
+                </p>
+              </div>
+            </Link>
+
+            {/* Dropdown */}
+
+            <div className="pointer-events-none absolute right-0 mt-4 w-72 translate-y-3 rounded-2xl border border-zinc-700 bg-[#242424] p-5 opacity-0 shadow-2xl transition-all duration-300 group-hover:pointer-events-auto group-hover:translate-y-0 group-hover:opacity-100">
+              <div className="flex items-center gap-4">
+                <div className="flex h-14 w-14 items-center justify-center rounded-full bg-blue-500 text-xl font-bold text-white">
+                  {user?.fristname?.charAt(0).toUpperCase() ?? "G"}
+                </div>
+
+                <div>
+                  <h3 className="font-semibold text-white">
+                    {user ? `${user.fristname} ${user.lastname}` : "Guest User"}
+                  </h3>
+
+                  <p className="text-sm text-zinc-400">
+                    {user?.email ?? "Login to access your account"}
+                  </p>
+                </div>
+              </div>
+
+              <div className="my-4 border-t border-zinc-700"></div>
+
+              <div>
+                <p className="text-xs text-zinc-500">Role</p>
+
+                <p className="mt-1 text-white capitalize">
+                  {user?.roles?.join(", ") ?? "Visitor"}
+                </p>
+              </div>
+
+              {!user ? (
+                <Link
+                  href="/Auth"
+                  className="mt-5 block rounded-xl bg-blue-600 py-3 text-center font-semibold text-white transition hover:bg-blue-500"
+                >
+                  Sign In
+                </Link>
+              ) : (
+                <div className="mt-5">
+                  <Logout
+                    onLogout={() => {
+                      setUser(null);
+                      router.refresh();
+                    }}
+                  />
+                </div>
+              )}
+            </div>
           </div>
         </div>
-        {user?.fristname ? (
-          <Logout
-            onLogout={() => {
-              setUser(null);
-              router.refresh();
-            }}
-          />
-        ) : null}
       </div>
-
-      <style jsx>{``}</style>
     </nav>
   );
 }
