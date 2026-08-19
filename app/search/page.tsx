@@ -1,8 +1,3 @@
-"use client";
-
-import { useSearchParams } from "next/navigation";
-import { notFound } from "next/navigation";
-import { useState, useEffect, use } from "react";
 import ProductCard from "@/Components/ProductCard";
 import api from "@/api/api";
 import Notfound from "@/Components/NotFound";
@@ -17,30 +12,27 @@ type Product = {
   images?: string[];
 };
 
-export default function SearchPage() {
-  const searchParams = useSearchParams();
-  const [products, setProducts] = useState<Product[]>([]);
-  const [count, setcount] = useState(0);
-  const q = searchParams.get("q");
+type SearchPageProps = {
+  searchParams: Promise<{ q?: string | string[] }>;
+};
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      if (!q) {
-        return notFound;
-      }
+async function getSearchResults(q: string | undefined) {
+  const { data } = await api.get("/products", {
+    params: {
+      q,
+    },
+  });
 
-      const { data } = await api.get("/products", {
-        params: {
-          q,
-        },
-      });
+  return {
+    products: (data?.products ?? []) as Product[],
+    count: data?.count ?? 0,
+  };
+}
 
-      setProducts(data.products);
-      setcount(data.count);
-    };
-
-    fetchProducts();
-  }, [q]);
+export default async function SearchPage({ searchParams }: SearchPageProps) {
+  const { q: searchQuery } = await searchParams;
+  const q = Array.isArray(searchQuery) ? searchQuery[0] : searchQuery;
+  const { products, count } = await getSearchResults(q);
 
   return (
     <>

@@ -1,78 +1,87 @@
-"use client"
+"use client";
+
 import api from "@/api/api";
 import { FiEdit2 } from "react-icons/fi";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import Link from "next/link";
 
 export default function AccountPage() {
-  const [user, setUser] = useState({fristname: "", email: "" ,lastname: "", phoneNumber: "", dateOfBirth: "", gender: ""});
+  const [user, setUser] = useState({
+    fristname: "",
+    lastname: "",
+    email: "",
+    phoneNumber: "",
+    dateOfBirth: "",
+    gender: "",
+  });
 
   useEffect(() => {
     const fetchUserData = async () => {
       const res = await api.get("/users/me");
+
       if (res.status === 200) {
-        // Handle successful response
-        const user = res.data.data;
-        console.log(user);
-        setUser(user);
+        setUser(res.data.data);
       }
     };
 
     fetchUserData();
   }, []);
 
-  if (!user) {
-    return <div>Loading...</div>;
-  }
-
   return (
-    <div className="w-full  rounded-xl bg-[#262626] p-8 text-white">
+    <div className="w-full rounded-2xl bg-[#262626] p-4 sm:p-6 lg:p-8 text-white shadow-lg">
       {/* Header */}
-      <div className="mb-8 flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Profile</h1>
+      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <h1 className="text-2xl sm:text-3xl font-bold">Profile</h1>
 
-        <button className="flex items-center gap-2 rounded-lg border border-gray-600 px-4 py-2 text-sm text-blue-400 transition hover:bg-gray-700">
+        <Link
+          href="/profile/edit"
+          className="flex items-center gap-2 rounded-lg border border-gray-600 px-4 py-2 text-sm text-blue-400 transition hover:bg-gray-700"
+        >
           <FiEdit2 size={16} />
           Edit
-        </button>
+        </Link>
       </div>
 
       {/* Info */}
-      <div className="grid grid-cols-1 gap-y-8 md:grid-cols-2">
-        <div>
-          <p className="mb-1 text-sm text-gray-400">First name</p>
-          <h2 className="text-xl font-semibold">{user.fristname}</h2>
-        </div>
+      <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+        <InfoCard title="First name" value={user.fristname} />
 
-        <div>
-          <p className="mb-1 text-sm text-gray-400">Last name</p>
-          <h2 className="text-xl font-semibold">{user.lastname}</h2>
-        </div>
+        <InfoCard title="Last name" value={user.lastname} />
 
-        <div>
-          <p className="mb-1 text-sm text-gray-400">Email address</p>
+        <div className="rounded-xl border border-zinc-700 bg-zinc-900/40 p-5">
+          <p className="mb-2 text-sm text-gray-400">Email address</p>
 
           <div className="flex items-center gap-2">
-            <h2 className="text-xl font-semibold">{user.email}</h2>
+            <h2 className="break-all text-lg sm:text-xl font-semibold">
+              {user.email}
+            </h2>
 
-            <span className="text-green-500 text-lg">✔</span>
+            <span className="text-green-500">✔</span>
           </div>
         </div>
 
-        <div>
-          <p className="mb-1 text-sm text-gray-400">Phone number</p>
-          <h2 className="text-xl font-semibold">{user.phoneNumber?user.phoneNumber:"Not specified"}</h2>
-        </div>
+        <InfoCard
+          title="Phone number"
+          value={user.phoneNumber || "Not specified"}
+        />
 
-        <div>
-          <p className="mb-1 text-sm text-gray-400">Date of birth</p>
-          <h2 className="text-xl font-semibold">{user.dateOfBirth?user.dateOfBirth:"Not specified"}</h2>
-        </div>
+        <InfoCard
+          title="Date of birth"
+          value={user.dateOfBirth.slice(0,10) || "Not specified"}
+        />
 
-        <div>
-          <p className="mb-1 text-sm text-gray-400">Gender</p>
-          <h2 className="text-xl font-semibold">{user.gender?user.gender:"Not specified"}</h2>
-        </div>
+        <InfoCard title="Gender" value={user.gender || "Not specified"} />
       </div>
+    </div>
+  );
+}
+
+function InfoCard({ title, value }: { title: string; value: string }) {
+  return (
+    <div className="rounded-xl border border-zinc-700 bg-zinc-900/40 p-5 transition hover:border-blue-500/50 hover:bg-zinc-900/70">
+      <p className="mb-2 text-sm text-gray-400">{title}</p>
+
+      <h2 className="break-words text-lg sm:text-xl font-semibold">{value}</h2>
     </div>
   );
 }
