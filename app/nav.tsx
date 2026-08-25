@@ -31,12 +31,10 @@ export default function Nav() {
     const fetchData = async () => {
       try {
         await api.get("/users/me").then((res) => {
-          console.log(res.data);
           setUser(res.data.data);
         });
 
         await api.get("/Mycart").then((res) => {
-          console.log(res.data.data.items);
           setOrders(res.data.data.items);
         });
       } catch (error) {
@@ -117,6 +115,17 @@ export default function Nav() {
                 About
               </Link>
             </li>
+
+            {user?.roles?.includes("admin") && (
+              <li>
+                <Link
+                  href="/admin"
+                  className="text-zinc-300 transition hover:text-blue-400 font-medium"
+                >
+                  Admin Dashboard
+                </Link>
+              </li>
+            )}
           </ul>
         </div>
 
@@ -302,6 +311,15 @@ export default function Nav() {
             >
               About
             </Link>
+
+            {user?.roles?.includes("admin") && (
+              <Link
+                href="/admin"
+                className="text-zinc-300 transition hover:text-blue-400 font-medium"
+              >
+                Admin Dashboard
+              </Link>
+            )}
 
             <Link
               href={user ? "/profile" : "/Auth"}
