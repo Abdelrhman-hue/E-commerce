@@ -129,36 +129,6 @@ npm start
 
 ---
 
-# 🔑 Environment Variables
-
-## Backend
-
-Create a `.env` file
-
-```env
-PORT=5000
-
-MONGO_URI=your_mongodb_connection
-
-JWT_SECRET=your_secret_key
-
-STRIPE_SECRET_KEY=your_secret_key
-
-STRIPE_WEBHOOK_SECRET=your_webhook_secret
-
-CLIENT_URL=http://localhost:3000
-```
-
----
-
-## Frontend
-
-```env
-NEXT_PUBLIC_API_URL=http://localhost:5000
-```
-
----
-
 # 📸 Screens
 
 - Home Page
@@ -203,7 +173,7 @@ NEXT_PUBLIC_API_URL=http://localhost:5000
 
 # 📌 Future Improvements
 
-- Wishlist ❤️
+- Wishlist 
 - Product Reviews
 - Product Images Upload
 - Coupons & Discounts
@@ -223,7 +193,7 @@ GitHub:
 https://github.com/Abdelrhman-hue
 
 LinkedIn:
-(Add your LinkedIn profile)
+www.linkedin.com/in/abdelrahman-sfwat-attia-9526b3423
 
 ---
 
