@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import api from "@/api/api";
 import { cookies } from "next/headers";
 import {
@@ -80,13 +81,17 @@ const getPaymentStyle = (status: string) => {
 export default async function OrdersPage() {
   const cookieStore = await cookies();
 
-  const res = await api.get<OrdersResponse>("/orders/all", {
-    headers: {
-      Cookie: cookieStore.toString(),
-    },
-  });
-
-  const orders = res.data?.data || [];
+  let orders: Order[] = [];
+  try {
+    const res = await api.get<OrdersResponse>('/orders/all', {
+      headers: {
+        Cookie: cookieStore.toString(),
+      },
+    });
+    orders = res.data?.data || [];
+  } catch (err) {
+    console.error('Admin orders fetch error:', err);
+  }
 
   const totalOrders = orders.length;
 

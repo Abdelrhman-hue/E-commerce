@@ -25,6 +25,7 @@ type Category = {
 
 type Product = {
   _id: string;
+  id: string;
   title: string;
   description?: string;
   price: number;
@@ -35,7 +36,6 @@ type Product = {
 };
 
 const DEFAULT_PRODUCTS_PER_PAGE = 5;
-
 
 export default function ProductsPage() {
   const router = useRouter();
@@ -63,13 +63,6 @@ export default function ProductsPage() {
 
   /*
    * Fetch Products
-   *
-   * Replace demoProducts with your API request.
-   *
-   * Example:
-   *
-   * const res = await api.get("/products");
-   * setProducts(res.data.products);
    */
 
   useEffect(() => {
@@ -93,20 +86,21 @@ export default function ProductsPage() {
           res.data.count ??
           productsData.length;
         const pages =
-          res.data.totalPages ?? Math.max(Math.ceil(total / productsPerPage), 1);
+          res.data.totalPages ??
+          Math.max(Math.ceil(total / productsPerPage), 1);
 
         setProducts(productsData);
         setTotalProducts(total);
         setTotalPages(pages);
-    } catch (error) {
+      } catch (error) {
         console.error("Failed to fetch products:", error);
-    } finally {
+      } finally {
         setLoading(false);
-    }
-};
+      }
+    };
 
-getProducts();
-}, [currentPage, productsPerPage]);
+    getProducts();
+  }, [currentPage, productsPerPage]);
 
   /*
    * Categories
@@ -162,14 +156,17 @@ getProducts();
 
   const paginatedProducts = filteredProducts;
 
-  const updatePage = useCallback((page: number) => {
-    const params = new URLSearchParams(searchParams.toString());
+  const updatePage = useCallback(
+    (page: number) => {
+      const params = new URLSearchParams(searchParams.toString());
 
-    params.set("limit", String(productsPerPage));
-    params.set("page", String(Math.min(Math.max(page, 1), totalPages)));
+      params.set("limit", String(productsPerPage));
+      params.set("page", String(Math.min(Math.max(page, 1), totalPages)));
 
-    router.push(`/admin/products?${params.toString()}`);
-  }, [productsPerPage, router, searchParams, totalPages]);
+      router.push(`/admin/products?${params.toString()}`);
+    },
+    [productsPerPage, router, searchParams, totalPages],
+  );
 
   /*
    * Delete Product
@@ -180,13 +177,11 @@ getProducts();
 
     try {
       setDeleting(true);
-
+      
+      await api.delete(`/products/delete/${deleteProduct._id}`);
       /*
       // Real API:
 
-      await api.delete(
-        `/products/${deleteProduct._id}`
-      );
       */
 
       await new Promise((resolve) => setTimeout(resolve, 500));
@@ -464,7 +459,7 @@ getProducts();
                           <td className="px-6 py-4">
                             <div className="flex justify-end gap-2">
                               <Link
-                                href={`/admin/products/${product._id}/edit`}
+                                href={`/admin/products/edit/${product.id}`}
                                 className="rounded-lg border border-zinc-800 p-2 text-zinc-400 transition hover:border-blue-500/30 hover:bg-blue-500/10 hover:text-blue-400"
                                 title="Edit"
                               >
@@ -574,10 +569,7 @@ getProducts();
                   </span>{" "}
                   -{" "}
                   <span className="font-medium text-zinc-300">
-                    {Math.min(
-                      currentPage * productsPerPage,
-                      totalProducts,
-                    )}
+                    {Math.min(currentPage * productsPerPage, totalProducts)}
                   </span>{" "}
                   of{" "}
                   <span className="font-medium text-zinc-300">

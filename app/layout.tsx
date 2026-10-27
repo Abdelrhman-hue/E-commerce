@@ -4,6 +4,7 @@ import "./globals.css";
 import Nav from "./nav";
 import Footer from "./footer";
 import { Toaster } from "sonner";
+import AIAssistantModal from "@/Components/AIAssistantModal";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -16,8 +17,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Shop Bog",
-  description: "The best place to buy your favorite products",
+  title: "Shop Bog - Modern Full-Stack E-Commerce",
+  description: "The best place to explore and purchase your favorite products with AI shopping assistant.",
 };
 
 export default function RootLayout({
@@ -30,10 +31,11 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col  ">
+      <body className="min-h-full flex flex-col bg-[#111111] text-white">
         <Nav />
         {children}
         <Toaster richColors position="bottom-center" />
+        <AIAssistantModal />
         <Footer />
       </body>
     </html>

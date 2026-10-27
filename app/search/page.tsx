@@ -1,15 +1,22 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import ProductCard from "@/Components/ProductCard";
 import api from "@/api/api";
 import Notfound from "@/Components/NotFound";
+import Link from "next/link";
+import { FiSearch, FiArrowLeft } from "react-icons/fi";
+
+export const dynamic = "force-dynamic";
 
 type Product = {
-  _id: string;
+  _id?: string;
+  id?: string | number;
   title: string;
   description: string;
   category: string;
   price: number;
   oldPrice?: number;
   images?: string[];
+  thumbnail?: string;
 };
 
 type SearchPageProps = {
@@ -17,16 +24,26 @@ type SearchPageProps = {
 };
 
 async function getSearchResults(q: string | undefined) {
-  const { data } = await api.get("/products", {
-    params: {
-      q,
-    },
-  });
+  if (!q) {
+    return { products: [], count: 0 };
+  }
 
-  return {
-    products: (data?.products ?? []) as Product[],
-    count: data?.count ?? 0,
-  };
+  try {
+    const { data } = await api.get("/products", {
+      params: { q },
+    });
+
+    return {
+      products: (data?.products ?? []) as Product[],
+      count: data?.count ?? 0,
+    };
+  } catch (error) {
+    console.error("Search API error:", error);
+    return {
+      products: [],
+      count: 0,
+    };
+  }
 }
 
 export default async function SearchPage({ searchParams }: SearchPageProps) {
@@ -35,34 +52,69 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   const { products, count } = await getSearchResults(q);
 
   return (
-    <>
-      {count > 0 ? (
+    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      {/* Header */}
+      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className=" m-4 p-1 ">Search: {q}</h1>
-          <h3 className="m-4 ">Results: {count}</h3>
+          <Link
+            href="/shop"
+            className="mb-2 inline-flex items-center gap-2 text-sm text-zinc-400 hover:text-white"
+          >
+            <FiArrowLeft /> Back to Shop
+          </Link>
+          <h1 className="text-2xl font-bold text-white sm:text-3xl">
+            Search Results for &ldquo;{q || ""}&rdquo;
+          </h1>
+          <p className="text-xs text-zinc-400">
+            Found {count} matching item{count !== 1 ? "s" : ""}
+          </p>
+        </div>
+      </div>
 
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 ml-6 mb-6 mr-6">
-            {products.map((product) => (
+      {count > 0 ? (
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          {products.map((product) => {
+            const prodId = String(product._id || product.id);
+            return (
               <ProductCard
-                key={product._id}
+                key={prodId}
                 product={{
-                  id: product._id,
+                  id: prodId,
                   title: product.title,
                   description: product.description,
                   price: product.price,
                   oldPrice: product.oldPrice,
                   category: product.category,
-                  images: product.images,
+                  images: product.images?.length
+                    ? product.images
+                    : product.thumbnail
+                      ? [product.thumbnail]
+                      : [],
                 }}
               />
-            ))}
-          </div>
+            );
+          })}
         </div>
       ) : (
-        <div className="not-found">
-          <Notfound />
+        <div className="rounded-2xl border border-zinc-800 bg-[#202020] p-12 text-center shadow-lg">
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-zinc-800 text-zinc-500">
+            <FiSearch size={32} />
+          </div>
+          <h3 className="text-xl font-bold text-white">No products found</h3>
+          <p className="mx-auto mt-2 max-w-md text-sm text-zinc-400">
+            We couldn&apos;t find any products matching &ldquo;{q}&rdquo;. Try
+            checking for typos or searching for a broader term.
+          </p>
+          <div className="mt-6 flex justify-center gap-3">
+            <Link
+              href="/shop"
+              className="rounded-xl bg-blue-600 px-6 py-2.5 text-sm font-semibold text-white shadow-lg shadow-blue-600/30 transition hover:bg-blue-500"
+            >
+              Browse All Products
+            </Link>
+          </div>
         </div>
       )}
-    </>
+    </div>
   );
 }

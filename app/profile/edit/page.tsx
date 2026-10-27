@@ -1,12 +1,15 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useEffect, useState } from "react";
 import { FiSave, FiArrowLeft } from "react-icons/fi";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import api from "@/api/api";
 import { toast } from "sonner";
 
 export default function EditProfilePage() {
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [id, setID] = useState("");
   const [form, setForm] = useState({
@@ -22,8 +25,19 @@ export default function EditProfilePage() {
     async function getUser() {
       try {
         const { data } = await api.get("/users/me");
-        setForm(data.data);
-        setID(data.data._id)
+        if (data?.data) {
+          setForm({
+            fristname: data.data.fristname || "",
+            lastname: data.data.lastname || "",
+            email: data.data.email || "",
+            phoneNumber: data.data.phoneNumber || "",
+            dateOfBirth: data.data.dateOfBirth
+              ? data.data.dateOfBirth.slice(0, 10)
+              : "",
+            gender: data.data.gender || "",
+          });
+          setID(data.data._id || "");
+        }
       } catch {
         toast.error("Failed to load profile");
       }
@@ -37,19 +51,19 @@ export default function EditProfilePage() {
 
     try {
       setLoading(true);
-
-      await api.patch(`/users/update/${id}`, form);
-
+      await api.patch(id ? `/users/update/${id}` : "/users/update", form);
       toast.success("Profile updated successfully");
-    } catch {
-      toast.error("Failed to update profile");
+      router.push("/profile");
+      router.refresh();
+    } catch (err: any) {
+      toast.error(err.response?.data?.error || "Failed to update profile");
     } finally {
       setLoading(false);
     }
   }
 
   function handleChange(
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) {
     setForm({
       ...form,
@@ -69,30 +83,29 @@ export default function EditProfilePage() {
             Back
           </Link>
 
-          <h1 className="text-3xl font-bold text-white">Edit Profile</h1>
+          <h1 className="text-2xl font-bold text-white sm:text-3xl">
+            Edit Profile
+          </h1>
         </div>
       </div>
 
-      <form
-        onSubmit={handleSubmit}
-        className="grid grid-cols-1 gap-6 md:grid-cols-2"
-      >
+      <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <Input
-          label="First Name"
+          label="First name"
           name="fristname"
           value={form.fristname}
           onChange={handleChange}
         />
 
         <Input
-          label="Last Name"
+          label="Last name"
           name="lastname"
           value={form.lastname}
           onChange={handleChange}
         />
 
         <Input
-          label="Email"
+          label="Email address"
           name="email"
           type="email"
           value={form.email}
@@ -100,17 +113,17 @@ export default function EditProfilePage() {
         />
 
         <Input
-          label="Phone Number"
+          label="Phone number"
           name="phoneNumber"
           value={form.phoneNumber}
           onChange={handleChange}
         />
 
         <Input
-          label="Date of Birth"
+          label="Date of birth"
           name="dateOfBirth"
           type="date"
-          value={form.dateOfBirth?.slice(0, 10)}
+          value={form.dateOfBirth}
           onChange={handleChange}
         />
 
@@ -131,11 +144,11 @@ export default function EditProfilePage() {
 
         <div className="md:col-span-2 mt-4 flex justify-end">
           <button
+            type="submit"
             disabled={loading}
             className="flex items-center gap-2 rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white transition hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-60"
           >
             <FiSave />
-
             {loading ? "Saving..." : "Save Changes"}
           </button>
         </div>
@@ -150,7 +163,7 @@ type InputProps = {
   value: string;
   type?: string;
   onChange: (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => void;
 };
 

@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import api from "@/api/api";
@@ -34,28 +35,28 @@ export default async function Admin() {
   const stats = [
     {
       title: "Products",
-      value: datacount.data.Products,
+      value: datacount?.data?.Products ?? datacount?.data?.products ?? 0,
       icon: <FiBox className="text-lg sm:text-2xl" />,
       color: "bg-blue-500/20",
       iconColor: "text-blue-400",
     },
     {
       title: "Users",
-      value: datacount.data.Users,
+      value: datacount?.data?.Users ?? datacount?.data?.users ?? 0,
       icon: <FiUsers className="text-lg sm:text-2xl" />,
       color: "bg-purple-500/20",
       iconColor: "text-purple-400",
     },
     {
       title: "Orders",
-      value: datacount.data.Orders,
+      value: datacount?.data?.Orders ?? datacount?.data?.orders ?? 0,
       icon: <FiShoppingCart className="text-lg sm:text-2xl" />,
       color: "bg-green-500/20",
       iconColor: "text-green-400",
     },
     {
       title: "Revenue",
-      value: `$${Number(datacount.data.Total || 0).toFixed(2)}`,
+      value: `${Number(datacount?.data?.Total || datacount?.data?.Revenue || 0).toFixed(2)}`,
       icon: <FiDollarSign className="text-lg sm:text-2xl" />,
       color: "bg-yellow-500/20",
       iconColor: "text-yellow-400",
